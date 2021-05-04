@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "673536055128",
+    "firebase_url": "https://quienesquien-62cd3-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "quienesquien-62cd3",
+    "storage_bucket": "quienesquien-62cd3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673536055128:android:cb50bbf794f4547a2db72d",
+        "android_client_info": {
+          "package_name": "com.example.das_quienesquien_jonalba"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "673536055128-gtbe0uvnrf95a0eqdtdgr1qvon9uuajp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2wqBgP1J_qtUnaYzyskNxpaFIR9IcRUM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "673536055128-gtbe0uvnrf95a0eqdtdgr1qvon9uuajp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
