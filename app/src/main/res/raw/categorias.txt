@@ -1,4 +1,4 @@
 
 
 los_simpsons
-Bart Simpson;Sr Burns;Edna Krabappel;Ned Flanders;Homer Simpson;Lisa Simpson;Maggie Simpson;Marge Simpson;Milhouse;Ralph;Seymour Skinner;Smithers
+Bart Simpson;Sr Burns;Edna Krabappel;Ned Flanders;Homer Simpson;Lisa Simpson;Maggie Simpson;Marge Simpson;Milhouse;Ralph;Seymour Skinner;Smithers;Apu;Krusty el payaso;Eleanor Abernathy

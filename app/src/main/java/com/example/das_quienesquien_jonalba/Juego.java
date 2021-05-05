@@ -38,6 +38,8 @@ public class Juego extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_juego);
 
+
+
         turnoJugador = (TextView) findViewById(R.id.txtTurnoJugador);
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("juego");
@@ -67,7 +69,7 @@ public class Juego extends AppCompatActivity {
         ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(nombres, personajes,this);
         lalista.setAdapter(eladaptador);
 
-        GridLayoutManager elLayoutRejillaIgual = new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
+        GridLayoutManager elLayoutRejillaIgual = new GridLayoutManager(this, 5, GridLayoutManager.VERTICAL, false);
         lalista.setLayoutManager(elLayoutRejillaIgual);
 
         btnCambiarTurno = (Button) findViewById(R.id.btnCambiarTurno);
@@ -89,9 +91,9 @@ public class Juego extends AppCompatActivity {
 
     private int[] getImagenesCategoria(String categoria) {
 
-        int[] resultado = new int[12];
+        int[] resultado = new int[15];
 
-        for (int x = 0; x < 12; x++) {
+        for (int x = 0; x < 15; x++) {
 
             int im = getResources().getIdentifier("los_simpsons_" + String.valueOf(x + 1), "drawable", Juego.this.getPackageName());
             resultado[x] = im;
@@ -104,7 +106,7 @@ public class Juego extends AppCompatActivity {
 
     private String[] getNombresCategoria(String categoria) {
 
-        String[] resultado = new String[12];
+        String[] resultado = new String[15];
 
         InputStream is = this.getResources().openRawResource(R.raw.categorias);
 
