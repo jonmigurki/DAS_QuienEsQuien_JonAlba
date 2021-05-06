@@ -9,43 +9,32 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#4B174C70"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/imageViewContacto"
-            android:layout_width="57dp"
-            android:layout_height="125dp"
-            android:layout_weight="20"
-            android:padding="10dp"
+            android:layout_width="224dp"
+            android:layout_height="222dp"
+            android:layout_gravity="center"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:layout_weight="80"
-            android:orientation="vertical">
+        <TextView
+            android:id="@+id/textViewNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="TextView"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/textViewNombre"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_weight="70"
-                android:gravity="center"
-                android:text="TextView"
-                android:textColor="#EEF1FF"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/textViewDes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="TextView"
+            android:textSize="24sp" />
 
-            <TextView
-                android:id="@+id/textViewDes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:gravity="center|left"
-                android:text="TextView"
-                android:textColor="#F1F8FD"
-                android:textSize="13dp" />
-        </LinearLayout>
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

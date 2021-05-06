@@ -60,6 +60,32 @@
             android:ems="10"
             android:inputType="textPassword" />
 
+        <TextView
+            android:id="@+id/textViewNombre2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Introduzca su nombre:" />
+
+        <EditText
+            android:id="@+id/editTextNombreReal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/textViewApellidos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Introduzca sus apellidos:" />
+
+        <EditText
+            android:id="@+id/editTextApellidos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
         <Button
             android:id="@+id/buttonRegistrarse"
             android:layout_width="match_parent"

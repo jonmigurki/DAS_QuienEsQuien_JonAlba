@@ -31,16 +31,16 @@ import java.util.Map;
 public class Registro extends AppCompatActivity {
 
     // Instanciamos los objetos para los campos y botones
-    EditText editTextNombreUsuario, editTextContrasena, editTextContrasena2;
+    EditText editTextNombreUsuario, editTextContrasena, editTextContrasena2, editTextNombreReal, editTextApellidos;
     Button buttonRegistrarse, buttonIniciarSesion;
 
     // Variable con el ID del canal de notificaciones
     private static final String CHANNEL_ID = "101";
 
     // URL del .php para el registro en el servidor
-    private String URL = "http://ec2-54-167-31-169.compute-1.amazonaws.com/aarsuaga010/WEB/registro.php";
+    private String URL = "http://ec2-54-167-31-169.compute-1.amazonaws.com/aarsuaga010/WEB/QuienEsQuien/registro.php";
 
-    private String nombreUsu, contra, contra2;
+    private String nombreUsu, contra, contra2, nombreReal, apellidos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +51,8 @@ public class Registro extends AppCompatActivity {
         editTextNombreUsuario= (EditText)findViewById(R.id.editTextNombreUsuario);
         editTextContrasena= (EditText)findViewById(R.id.editTextContrasena);
         editTextContrasena2= (EditText)findViewById(R.id.editTextContrasena2);
+        editTextNombreReal= (EditText)findViewById(R.id.editTextNombreReal);
+        editTextApellidos= (EditText)findViewById(R.id.editTextApellidos);
 
         buttonRegistrarse= (Button)findViewById(R.id.buttonRegistrarse);
         buttonIniciarSesion= (Button)findViewById(R.id.buttonIniciarSesion);
@@ -91,6 +93,9 @@ public class Registro extends AppCompatActivity {
         contra = editTextContrasena.getText().toString().trim();
         contra2 = editTextContrasena2.getText().toString().trim();
 
+        nombreReal = editTextNombreReal.getText().toString().trim();
+        apellidos = editTextApellidos.getText().toString().trim();
+
         // Si las contraseñas introducidas por el usuario son diferentes
         if(!contra.equals(contra2)){
             // Se le hace saber mediante un mensaje
@@ -105,8 +110,11 @@ public class Registro extends AppCompatActivity {
                     // Si recibimos "success" como respuesta, la petición ha funcionado correctamente y nos hemos registrado
                     if (response.equals("success")) {
                         // Abrimos la pantalla de login
-                        Intent intent = new Intent (view.getContext(), Login.class);
-                        startActivityForResult(intent, 0);
+
+                        Toast.makeText(Registro.this, "REGISTRO COMPLETO", Toast.LENGTH_LONG).show();
+
+                        //Intent intent = new Intent (view.getContext(), Login.class);
+                        //startActivityForResult(intent, 0);
                     }else{
                         // Si no, ha ocurrido un error
                         Toast.makeText(Registro.this, "Ha ocurrido un error.", Toast.LENGTH_LONG).show();
@@ -122,8 +130,14 @@ public class Registro extends AppCompatActivity {
                 protected Map<String, String> getParams() throws AuthFailureError {
                     // Creamos un map con el nombre de usuario y contraseña y lo devolvemos
                     Map<String, String> data = new HashMap<>();
-                    data.put("nombre", nombreUsu);
+                    data.put("usuario", nombreUsu);
                     data.put("contrasena", contra);
+
+                    data.put("nombre", nombreReal);
+                    data.put("apellidos", apellidos);
+
+                    // Modificar después
+                    data.put("token", "tokenDePrueba");
 
                     return data;
                 }
