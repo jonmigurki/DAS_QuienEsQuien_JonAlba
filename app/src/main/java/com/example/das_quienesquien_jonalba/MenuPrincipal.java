@@ -106,7 +106,7 @@ public class MenuPrincipal extends AppCompatActivity {
         list = new ArrayList<>();
 
         // Añadimos los items a la lista
-        list.add(new ItemsMenuView(1, R.drawable.interrogacion,"Categoría", "Escoge categoría."));
+        list.add(new ItemsMenuView(1, R.drawable.usuario,"Categoría", "Escoge categoría."));    //CAMBIAR USUARIO POR INTERROGACION
         list.add(new ItemsMenuView(2, R.drawable.usuario,"Jugadores", "Escoge contrincante."));
 
 
