@@ -32,23 +32,38 @@ import java.util.Random;
 
 public class Juego extends AppCompatActivity {
 
+    //Variables para la conexión a la Realtime Database de Firebase
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
 
+    //Guardamos el usuario que se ha identificado en el juego
     String usuarioIdentificado;
 
     TextView turnoJugador;
     Button btnCambiarTurno, btnChat;
     ImageView imagenPersonaje;
 
-    String turnoActual;
+
+
+    //VARIABLES DE LA JUGADA
+    String jugador1 = "", jugador2 = "";
+    String turno; //quién hace la pregunta
+    int ronda; //ronda 1, 2, 3, ...
+    boolean preguntaRealizada = false;
+    boolean respuestaRealizada = false; //estos dos booleanos ayudarán a que SOLAMENTE se pueda hacer una pregunta y una respuesta por ronda (sólo 1 mensaje por ronda)
+
+    boolean juego = false;
+    boolean fin = false;    //indica si la partida ha acabado
+
+
     String nombreP, imagenP;    //Variables que guardan el nombre del personaje ('Homer Simpson') y su imagen asociada ('los_simpsons_5.png')
 
     String categoria = "los_simpsons";
 
+    //Nombre que tiene la jugada actual en la base de datos de Firebase
     String jugada;
 
-
+    //Guardamos toda la información acerca de los personajes de la categoría elegida en cada jugada
     int[] rutapersonajes;
     String[] nombrespersonajes;
 
@@ -70,6 +85,7 @@ public class Juego extends AppCompatActivity {
 
         imagenPersonaje = (ImageView) findViewById(R.id.imgPersonaje);
 
+        //Se obtiene un personaje aleatorio con el que cada jugador jugará
         obtenerPersonajeAleatorio();
 
 
@@ -97,15 +113,27 @@ public class Juego extends AppCompatActivity {
         //jugada = "juego_" + fecha + "_" + hora;
         jugada = "juego1";
 
-        databaseReference = firebaseDatabase.getReference("juegos");
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        //Guardamos a los jugadores en la nueva partida
+        //  -Si no hay un "jugador1" lo establecemos como "jugador1"
+        //  -Si ya hay un "jugador1" lo establecemos como "jugador2"
+        databaseReference = firebaseDatabase.getReference("juegos");
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.child(jugada).hasChild("jugador1")) {
+
+                if (snapshot.child(jugada).hasChild("jugador1") && !(snapshot.child(jugada).hasChild("jugador2")) && !(usuarioIdentificado.equals(jugador1))) {
                     databaseReference.child(jugada).child("jugador2").setValue(jugador);
-                }else{
+
+                }else if(!(snapshot.child(jugada).hasChild("jugador1"))) {
                     databaseReference.child(jugada).child("jugador1").setValue(jugador);
+                    turnoJugador.setText("Esperando la aprobación del jugador2");
+                    jugador1 = usuarioIdentificado;
+
+                }else if(snapshot.child(jugada).hasChild("jugador1") && snapshot.child(jugada).hasChild("jugador2") && !juego){
+                    turnoJugador.setText("Empieza la partida");
+                    juego=true;
+                    juego();
                 }
             }
 
@@ -140,8 +168,9 @@ public class Juego extends AppCompatActivity {
         });
 */
 
-        RecyclerView lalista = (RecyclerView) findViewById(R.id.RecyclerView1);
 
+        //Creamos el tablero con los personajes
+        RecyclerView lalista = (RecyclerView) findViewById(R.id.RecyclerView1);
 
         ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(nombrespersonajes, rutapersonajes,this);
         lalista.setAdapter(eladaptador);
@@ -162,6 +191,7 @@ public class Juego extends AppCompatActivity {
         });
 */
 
+        //Cuando pulsemos el botón de "CHAT" nos llevará a la actividad del chat
         btnChat = (Button) findViewById(R.id.btnChat);
         btnChat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,10 +204,14 @@ public class Juego extends AppCompatActivity {
         });
 
 
+        //MÉTODO CON EL QUE EMPIEZA EL JUEGO
+       // juego();
+
 
     }
 
 
+    //Obtenemos una lista con todas las instancias de las imágenes de la categoría elegida
     private int[] getImagenesCategoria(String categoria) {
 
         int[] resultado = new int[15];
@@ -193,6 +227,8 @@ public class Juego extends AppCompatActivity {
 
     }
 
+
+    //Obtenemos una lista con todos los nombres de los personajes de la categoría elegida
     private String[] getNombresCategoria(String categoria) {
 
         String[] resultado = new String[15];
@@ -231,14 +267,61 @@ public class Juego extends AppCompatActivity {
     }
 
 
+
     private void obtenerPersonajeAleatorio(){
 
+        //Establecemos un número aleatorio entre 0 y 14
         Random r = new Random();
         int random = r.nextInt(15);
 
         imagenPersonaje.setImageResource(rutapersonajes[random]);
 
+        //Guardamos el personaje que le ha tocado
         nombreP = nombrespersonajes[random];
+
+    }
+
+
+
+
+    public void juego(){
+
+        //Se acaba de empezar la partida
+        databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String j1 = snapshot.child("jugador1").child("usuario").getValue().toString();
+                String j2 = snapshot.child("jugador2").child("usuario").getValue().toString();
+
+                jugador1 = j1;
+                jugador2 = j2;
+
+
+                databaseReference.child("turno").setValue(jugador1);
+                turno = jugador1;
+
+                databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+                databaseReference.child("ronda").setValue(1);
+                ronda = 1;
+                databaseReference.child("preguntaRealizada").setValue("false");
+                preguntaRealizada = false;
+                databaseReference.child("respuestaRealizada").setValue("false");
+                respuestaRealizada = false;
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
 
     }
 
