@@ -26,7 +26,7 @@ public class ElAdaptadorRecycler extends RecyclerView.Adapter<ElViewHolder>{
     @NonNull
     @Override
     public ElViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View elLayoutDeCadaItem= LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview,null);
+        View elLayoutDeCadaItem= LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_personajes,null);
         ElViewHolder evh = new ElViewHolder(elLayoutDeCadaItem);
         evh.seleccion = seleccionados;
         evh.elcontexto = context;
