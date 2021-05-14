@@ -76,27 +76,62 @@ public class Chat extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.child("preguntaRealizada").getValue().toString().equals("true")){
-                            Toast.makeText(Chat.this, "Sólo puedes hacer una pregunta por ronda", Toast.LENGTH_SHORT).show();
-                        }else{
 
-                            databaseReference =  firebaseDatabase.getReference("juegos/" + jugada + "/mensajes");
-                            Mensaje m = new Mensaje(usuarioIdentificado, txtMensaje.getText().toString());
-                            databaseReference.push().setValue(m);
-
-                            //Borramos el texto que acabamos de enviar
-                            txtMensaje.setText("");
-
-                            //adaptador.addMensaje(m);
-
-                            //Bajamos el teclado de la pantalla
-                            View view = Chat.this.getCurrentFocus();
-                            if (view != null) {
-                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                            //Hay dos opciones:
+                            // 1. Es el turno del jugador identificado en la aplicación
+                            if(snapshot.child("turno").getValue().toString().equals(usuarioIdentificado)){
+                                Toast.makeText(Chat.this, "Sólo puedes hacer una pregunta por ronda", Toast.LENGTH_SHORT).show();
                             }
 
-                            databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
-                            databaseReference.child("preguntaRealizada").setValue("true");
+                            //2. Es el turno del otro jugador identificado
+                            //El jugador debe responder a la pregunta
+                            else{
+
+                                databaseReference = firebaseDatabase.getReference("juegos/" + jugada + "/mensajes");
+
+                                Mensaje m = new Mensaje(usuarioIdentificado, txtMensaje.getText().toString());
+                                databaseReference.push().setValue(m);
+                                txtMensaje.setText("");
+
+                                View view = Chat.this.getCurrentFocus();
+                                if (view != null) {
+                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                }
+
+                                databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+                                databaseReference.child("respuestaRealizada").setValue("true");
+
+                            }
+
+                        }else{
+
+                            if(snapshot.child("turno").getValue().toString().equals(usuarioIdentificado)) {
+                                databaseReference = firebaseDatabase.getReference("juegos/" + jugada + "/mensajes");
+                                Mensaje m = new Mensaje(usuarioIdentificado, txtMensaje.getText().toString());
+                                databaseReference.push().setValue(m);
+
+                                //Borramos el texto que acabamos de enviar
+                                txtMensaje.setText("");
+
+                                //adaptador.addMensaje(m);
+
+                                //Bajamos el teclado de la pantalla
+                                View view = Chat.this.getCurrentFocus();
+                                if (view != null) {
+                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                }
+
+                                databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+                                databaseReference.child("preguntaRealizada").setValue("true");
+                            }
+
+                            else{
+
+                                Toast.makeText(Chat.this, "Le toca al otro jugador hacer la pregunta. Espera.", Toast.LENGTH_SHORT).show();
+
+                            }
                         }
                     }
 

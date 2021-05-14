@@ -40,7 +40,7 @@ public class Juego extends AppCompatActivity {
     String usuarioIdentificado;
 
     TextView turnoJugador;
-    Button btnCambiarTurno, btnChat;
+    Button btnCambiarTurno, btnChat, btnDescartados;
     ImageView imagenPersonaje;
 
 
@@ -133,7 +133,7 @@ public class Juego extends AppCompatActivity {
                 }else if(snapshot.child(jugada).hasChild("jugador1") && snapshot.child(jugada).hasChild("jugador2") && !juego){
                     turnoJugador.setText("Empieza la partida");
                     juego=true;
-                    juego();
+                    prejuego();
                 }
             }
 
@@ -207,6 +207,7 @@ public class Juego extends AppCompatActivity {
         //MÉTODO CON EL QUE EMPIEZA EL JUEGO
        // juego();
 
+        btnDescartados = (Button) findViewById(R.id.btnDescartados);
 
     }
 
@@ -284,7 +285,7 @@ public class Juego extends AppCompatActivity {
 
 
 
-    public void juego(){
+    public void prejuego() {
 
         //Se acaba de empezar la partida
         databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
@@ -310,6 +311,7 @@ public class Juego extends AppCompatActivity {
                 databaseReference.child("respuestaRealizada").setValue("false");
                 respuestaRealizada = false;
 
+                juego();
 
 
             }
@@ -320,6 +322,118 @@ public class Juego extends AppCompatActivity {
             }
         });
 
+
+
+
+    }
+
+    public void juego(){
+
+
+        databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                btnDescartados.setVisibility(View.INVISIBLE);
+
+                if(snapshot.child("turno").getValue().toString().equals(usuarioIdentificado)){
+
+                    //MI TURNO
+                    //Debo escribir la pregunta
+
+                    if(snapshot.child("preguntaRealizada").getValue().toString().equals("false")){
+                        turnoJugador.setText("Vete al chat y haz una pregunta");
+                    }
+
+                    if(snapshot.child("respuestaRealizada").getValue().toString().equals("true")){
+
+                        //Se deben descartar los personajes que no cumplan con la característica
+
+                        turnoJugador.setText("Te toca descartar los personajes");
+
+                        btnDescartados.setVisibility(View.VISIBLE);
+
+                    } else if(snapshot.child("respuestaRealizada").getValue().toString().equals("false") &&
+                    snapshot.child("preguntaRealizada").getValue().toString().equals("true")){
+
+                        turnoJugador.setText("Espera a que el otro jugador responda");
+
+                    }
+
+
+
+
+
+                }else if(!(snapshot.child("turno").getValue().toString().equals(usuarioIdentificado))){
+
+                    //EL TURNO DEL OTRO JUGADOR
+                    //Debo responder a su pregunta
+
+                    if(snapshot.child("respuestaRealizada").getValue().toString().equals("true")){
+                        turnoJugador.setText("Espera a que el otro jugador descarte sus personajes");
+                    }
+
+
+                    if(snapshot.child("preguntaRealizada").getValue().toString().equals("true") &&
+                    snapshot.child("respuestaRealizada").getValue().toString().equals("false")){
+
+                        turnoJugador.setText("Responde en el chat");
+
+                    }else if(snapshot.child("preguntaRealizada").getValue().toString().equals("false")){
+
+                        turnoJugador.setText("Espera a que el otro jugador pregunte");
+                    }
+
+
+                }
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+        btnDescartados.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.child("turno").getValue().toString().equals(jugador1)){
+                            databaseReference.child("turno").setValue(jugador2);
+                        }else if(snapshot.child("turno").getValue().toString().equals(jugador2)){
+                            databaseReference.child("turno").setValue(jugador1);
+                        }
+
+                        //Al cambiar el turno, volvemos a empezar con una nueva ronda (no se han hecho aún pregunta y respuesta)
+                        databaseReference.child("preguntaRealizada").setValue("false");
+                        preguntaRealizada = false;
+                        databaseReference.child("respuestaRealizada").setValue("false");
+                        respuestaRealizada = false;
+
+
+                        btnDescartados.setVisibility(View.INVISIBLE);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
+            }
+        });
 
 
 
