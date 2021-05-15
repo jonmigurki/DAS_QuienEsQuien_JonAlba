@@ -1,5 +1,6 @@
 package com.example.das_quienesquien_jonalba;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,6 +11,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +35,15 @@ public class MenuPrincipal extends AppCompatActivity {
     //--------------------------------------
 
 
+    String nombreJugador = "";
+    String nombreSala = "";
 
+    FirebaseDatabase database;
+    DatabaseReference salaRef;
+    DatabaseReference salasRef;
     //--------------------------------------
 
+    List<String> listaSalas;
 
 
     @Override
@@ -39,10 +52,14 @@ public class MenuPrincipal extends AppCompatActivity {
         setContentView(R.layout.activity_menu_principal);
 
 
+        database = FirebaseDatabase.getInstance();
+
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            nombreUsuario = extras.getString("usuario");
+            nombreJugador = extras.getString("usuario");
         }
+        listaSalas = new ArrayList<>();
 
 
         //--------------------------------------
@@ -91,7 +108,16 @@ public class MenuPrincipal extends AppCompatActivity {
                     alertDia.show();
 
                     // ............
-                }else if(item.nombre=="Crear/Unirse juego"){
+                }else if(item.nombre=="Crear juego"){
+                    nombreSala = nombreJugador;
+                    salaRef = database.getReference("salas/"+ nombreSala +"/jugador1");
+
+                    crearSala();
+
+                    salaRef.setValue(nombreJugador);
+
+
+                }else if(item.nombre=="Unirse a juego"){
                     Intent intent = new Intent (view.getContext(), GestionSalas.class);
                     intent.putExtra("usuario", nombreUsuario);
                     startActivity(intent);
@@ -106,6 +132,26 @@ public class MenuPrincipal extends AppCompatActivity {
 
 
 
+    private void crearSala() {
+        salaRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
+                Intent intent = new Intent(getApplicationContext(), Juego.class);
+                intent.putExtra("nombreSala", nombreSala);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+                // Notificamos al usuario de que ha ocurrido un error
+                Toast.makeText(MenuPrincipal.this,"Ha ocurrido un error.",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
 
 
@@ -115,8 +161,8 @@ public class MenuPrincipal extends AppCompatActivity {
 
         // Añadimos los items a la lista
         list.add(new ItemsMenuView(1, R.drawable.interrogacion,"Categoría", "Escoge una categoría."));
-        list.add(new ItemsMenuView(2, R.drawable.usuario,"Crear/Unirse juego", "Crea un juego y espera a que alguien se una."));
-        //list.add(new ItemsMenuView(2, R.drawable.usuario,"Unirse a juego", "Únete a un juego ya creado."));
+        list.add(new ItemsMenuView(2, R.drawable.usuario,"Crear juego", "Crea un juego y espera a que alguien se una."));
+        list.add(new ItemsMenuView(3, R.drawable.usuario,"Unirse a juego", "Únete a un juego ya creado."));
 
 
 

@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/imageViewContacto"
-            android:layout_width="224dp"
-            android:layout_height="222dp"
+            android:layout_width="188dp"
+            android:layout_height="175dp"
             android:layout_gravity="center"
             tools:srcCompat="@tools:sample/avatars" />
 

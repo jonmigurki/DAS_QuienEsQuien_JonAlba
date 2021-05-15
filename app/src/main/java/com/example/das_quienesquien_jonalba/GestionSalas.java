@@ -71,7 +71,7 @@ public class GestionSalas extends AppCompatActivity {
 
                 nombreSala = nombreJugador;
                 salaRef = database.getReference("salas/"+ nombreSala +"/jugador1");
-                
+
                 crearSala();
 
                 salaRef.setValue(nombreJugador);
