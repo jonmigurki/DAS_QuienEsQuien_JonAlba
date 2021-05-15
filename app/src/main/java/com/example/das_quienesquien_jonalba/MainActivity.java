@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, MenuPrincipal.class);
+                Intent i = new Intent(MainActivity.this, Login.class);
                 startActivity(i);
                 finish();
             }

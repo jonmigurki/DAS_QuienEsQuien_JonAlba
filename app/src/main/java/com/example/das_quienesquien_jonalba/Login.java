@@ -133,7 +133,7 @@ public class Login extends AppCompatActivity {
             Log.d("Resultado", result.toString());
 
             if(result.equals("OK")){
-                Intent i = new Intent(Login.this, Juego.class);
+                Intent i = new Intent(Login.this, MenuPrincipal.class);
                 i.putExtra("usuario", usuario.getText().toString());
                 startActivity(i);
                 finish();

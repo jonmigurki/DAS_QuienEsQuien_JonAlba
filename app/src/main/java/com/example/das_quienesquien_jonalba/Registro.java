@@ -24,11 +24,15 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Registro extends AppCompatActivity {
+
+    String token;
 
     // Instanciamos los objetos para los campos y botones
     EditText editTextNombreUsuario, editTextContrasena, editTextContrasena2, editTextNombreReal, editTextApellidos;
@@ -46,6 +50,8 @@ public class Registro extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
+
+        getToken();
 
         // Asignamos los id a las variables
         editTextNombreUsuario= (EditText)findViewById(R.id.editTextNombreUsuario);
@@ -137,7 +143,7 @@ public class Registro extends AppCompatActivity {
                     data.put("apellidos", apellidos);
 
                     // Modificar después
-                    data.put("token", "tokenDePrueba");
+                    data.put("token", token);
 
                     return data;
                 }
@@ -147,5 +153,22 @@ public class Registro extends AppCompatActivity {
             requestQueue.add(stringRequest);
         }
     }
+
+
+    // Método para la obtención del token
+    public void getToken(){
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+                        token = task.getResult().getToken();
+                    }
+                });
+    }
+
+
 
 }

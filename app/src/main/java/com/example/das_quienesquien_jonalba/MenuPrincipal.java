@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,12 +21,33 @@ public class MenuPrincipal extends AppCompatActivity {
     List<ItemsMenuView> list;
 
     String[] listaCategorias = {"Los Simpson", "Otros"};
-    String[] listaJugadores = {"usuario1", "usuario2"};
+    String[] listaJugadores = {"JugadorPruebas", "Jugador2"};
+
+    String nombreUsuario;
+
+    //--------------------------------------
+
+
+
+    //--------------------------------------
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_principal);
+
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            nombreUsuario = extras.getString("usuario");
+        }
+
+
+        //--------------------------------------
+
+        // ---------------------------
 
         // Asignamos los id a las variables
         ListViewItem = findViewById(R.id.ListViewItem);
@@ -55,6 +75,9 @@ public class MenuPrincipal extends AppCompatActivity {
                             if(i==0){
                                 // Si se selecciona el primer elemento, es la categoría "Los Simpson"
 
+                                // PASAR EL NOMBRE Y LO DE LOS JUGADORES,
+                                // ENVIAR PETICIÓN. FIREBASE.
+
                             }else if (i==1){
                                 // Si se selecciona el primer elemento, es la categoría "---"
 
@@ -67,32 +90,13 @@ public class MenuPrincipal extends AppCompatActivity {
                     // Mostrar el alert
                     alertDia.show();
 
-
-
                     // ............
-                }else if(item.nombre=="Jugadores"){
-                    Toast.makeText(MenuPrincipal.this, "Jugadores.", Toast.LENGTH_LONG).show();
+                }else if(item.nombre=="Crear/Unirse juego"){
+                    Intent intent = new Intent (view.getContext(), GestionSalas.class);
+                    intent.putExtra("usuario", nombreUsuario);
+                    startActivity(intent);
+                    finish();
 
-
-                    // Creamos el AlertDialog con las opciones disponibles
-                    AlertDialog.Builder alert = new AlertDialog.Builder(MenuPrincipal.this);
-                    alert.setSingleChoiceItems(listaJugadores, -1, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int i) {
-                            if(i==0){
-                                // Si se selecciona el primer elemento, es la categoría Simpsons
-
-                            }else if (i==1){
-                                // Si se selecciona el primer elemento, es la categoría ---
-
-                            }
-                            // Cuando ya se ha selecionado
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alertDia = alert.create();
-                    // Mostrar el alert
-                    alertDia.show();
                 }
             }
         });
@@ -101,13 +105,19 @@ public class MenuPrincipal extends AppCompatActivity {
     }
 
 
+
+
+
+
     // Método para añadir datos a la lista personalizada
     private List<ItemsMenuView> getData() {
         list = new ArrayList<>();
 
         // Añadimos los items a la lista
-        list.add(new ItemsMenuView(1, R.drawable.usuario,"Categoría", "Escoge categoría."));    //CAMBIAR USUARIO POR INTERROGACION
-        list.add(new ItemsMenuView(2, R.drawable.usuario,"Jugadores", "Escoge contrincante."));
+        list.add(new ItemsMenuView(1, R.drawable.interrogacion,"Categoría", "Escoge una categoría."));
+        list.add(new ItemsMenuView(2, R.drawable.usuario,"Crear/Unirse juego", "Crea un juego y espera a que alguien se una."));
+        //list.add(new ItemsMenuView(2, R.drawable.usuario,"Unirse a juego", "Únete a un juego ya creado."));
+
 
 
         // Devolvemos la lista
