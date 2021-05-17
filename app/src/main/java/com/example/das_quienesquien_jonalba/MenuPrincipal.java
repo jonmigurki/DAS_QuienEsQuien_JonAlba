@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MenuPrincipal extends AppCompatActivity {
@@ -109,12 +110,23 @@ public class MenuPrincipal extends AppCompatActivity {
 
                     // ............
                 }else if(item.nombre=="Crear juego"){
-                    nombreSala = nombreJugador;
-                    salaRef = database.getReference("salas/"+ nombreSala +"/jugador1");
+                    //nombreSala = nombreJugador;
+                    nombreSala = "juego1";
 
-                    crearSala();
+                    HashMap<String,String> jugador = new HashMap<String,String>();
+                    jugador.put("usuario", nombreJugador);
+                    jugador.put("personaje", "");
 
-                    salaRef.setValue(nombreJugador);
+                    salaRef = database.getReference("juegos");
+                    salaRef.child("juego1").child("jugador1").setValue(jugador);
+
+                    Intent intent = new Intent(getApplicationContext(), Juego.class);
+                    intent.putExtra("usuario", nombreJugador);
+                    startActivity(intent);
+
+                    //crearSala();
+
+                    //salaRef.setValue(nombreJugador);
 
 
                 }else if(item.nombre=="Unirse a juego"){

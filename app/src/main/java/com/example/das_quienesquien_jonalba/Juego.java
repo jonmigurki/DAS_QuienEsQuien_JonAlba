@@ -56,7 +56,7 @@ public class Juego extends AppCompatActivity {
     boolean fin = false;    //indica si la partida ha acabado
 
 
-    String nombreP, imagenP;    //Variables que guardan el nombre del personaje ('Homer Simpson') y su imagen asociada ('los_simpsons_5.png')
+    String nombreP1, nombreP2, imagenP;    //Variables que guardan el nombre del personaje ('Homer Simpson') y su imagen asociada ('los_simpsons_5.png')
 
     String categoria = "los_simpsons";
 
@@ -92,11 +92,12 @@ public class Juego extends AppCompatActivity {
         firebaseDatabase = FirebaseDatabase.getInstance();
      //   databaseReference = firebaseDatabase.getReference("juegos");
 
+/*
         HashMap<String,String> jugador = new HashMap<String,String>();
         jugador.put("usuario", usuarioIdentificado);
         jugador.put("personaje", nombreP);
 
-       /* HashMap<String,String> jugador2 = new HashMap<String,String>();
+       HashMap<String,String> jugador2 = new HashMap<String,String>();
         jugador2.put("usuario", "alba01");
         jugador2.put("personaje", "Homer Simpson");
         */
@@ -121,7 +122,7 @@ public class Juego extends AppCompatActivity {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+            /*
                 if (snapshot.child(jugada).hasChild("jugador1") && !(snapshot.child(jugada).hasChild("jugador2")) && !(usuarioIdentificado.equals(jugador1))) {
                     databaseReference.child(jugada).child("jugador2").setValue(jugador);
 
@@ -131,6 +132,14 @@ public class Juego extends AppCompatActivity {
                     jugador1 = usuarioIdentificado;
 
                 }else if(snapshot.child(jugada).hasChild("jugador1") && snapshot.child(jugada).hasChild("jugador2") && !juego){
+                    turnoJugador.setText("Empieza la partida");
+                    juego=true;
+                    prejuego();
+                }*/
+
+
+
+                if(snapshot.child(jugada).hasChild("jugador1") && snapshot.child(jugada).hasChild("jugador2") && !juego){
                     turnoJugador.setText("Empieza la partida");
                     juego=true;
                     prejuego();
@@ -273,12 +282,15 @@ public class Juego extends AppCompatActivity {
 
         //Establecemos un número aleatorio entre 0 y 14
         Random r = new Random();
-        int random = r.nextInt(15);
+        int random1 = r.nextInt(15);
+        int random2 = r.nextInt(15);
 
-        imagenPersonaje.setImageResource(rutapersonajes[random]);
+        imagenPersonaje.setImageResource(rutapersonajes[random1]);
+        imagenPersonaje.setImageResource(rutapersonajes[random2]);
 
         //Guardamos el personaje que le ha tocado
-        nombreP = nombrespersonajes[random];
+        nombreP1 = nombrespersonajes[random1];
+        nombreP2 = nombrespersonajes[random2];
 
     }
 
@@ -295,6 +307,11 @@ public class Juego extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String j1 = snapshot.child("jugador1").child("usuario").getValue().toString();
                 String j2 = snapshot.child("jugador2").child("usuario").getValue().toString();
+
+                databaseReference.child(jugada).child("jugador1").child("personaje").setValue(nombreP1);
+                databaseReference.child(jugada).child("jugador2").child("personaje").setValue(nombreP2);
+
+
 
                 jugador1 = j1;
                 jugador2 = j2;

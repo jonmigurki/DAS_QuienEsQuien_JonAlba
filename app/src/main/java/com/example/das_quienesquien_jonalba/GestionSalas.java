@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class GestionSalas extends AppCompatActivity {
@@ -83,10 +84,24 @@ public class GestionSalas extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Unirse a una sala existente y entrar como el jugador2
-                nombreSala = listaSalas.get(position);
-                salaRef = database.getReference("salas/"+ nombreSala +"/jugador2");
-                crearSala();
-                salaRef.setValue(nombreJugador);
+                //nombreSala = listaSalas.get(position);
+
+                nombreSala = "juego1";
+
+                HashMap<String,String> jugador = new HashMap<String,String>();
+                jugador.put("usuario", nombreJugador);
+                jugador.put("personaje", "");
+
+                salaRef = database.getReference("juegos");
+                salaRef.child("juego1").child("jugador2").setValue(jugador);
+
+
+                Intent intent = new Intent(getApplicationContext(), Juego.class);
+                intent.putExtra("usuario", nombreJugador);
+                startActivity(intent);
+
+                //crearSala();
+                //salaRef.setValue(nombreJugador);
             }
         });
 
@@ -101,7 +116,7 @@ public class GestionSalas extends AppCompatActivity {
                 button.setEnabled(true);
 
                 Intent intent = new Intent(getApplicationContext(), Juego.class);
-                intent.putExtra("nombreSala", nombreSala);
+                intent.putExtra("nombreSala", nombreJugador);
                 startActivity(intent);
             }
 
@@ -116,7 +131,7 @@ public class GestionSalas extends AppCompatActivity {
     }
 
     private void mostrarListaSalas(){
-        salasRef = database.getReference("salas");
+        salasRef = database.getReference("juegos");
         salasRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
