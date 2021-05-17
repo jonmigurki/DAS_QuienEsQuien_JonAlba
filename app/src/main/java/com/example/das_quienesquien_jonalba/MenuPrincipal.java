@@ -131,7 +131,7 @@ public class MenuPrincipal extends AppCompatActivity {
 
                 }else if(item.nombre=="Unirse a juego"){
                     Intent intent = new Intent (view.getContext(), GestionSalas.class);
-                    intent.putExtra("usuario", nombreUsuario);
+                    intent.putExtra("usuario", nombreJugador);
                     startActivity(intent);
                     finish();
 
