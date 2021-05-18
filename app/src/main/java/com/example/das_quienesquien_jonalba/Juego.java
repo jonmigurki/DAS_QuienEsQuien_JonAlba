@@ -308,8 +308,14 @@ public class Juego extends AppCompatActivity {
                 String j1 = snapshot.child("jugador1").child("usuario").getValue().toString();
                 String j2 = snapshot.child("jugador2").child("usuario").getValue().toString();
 
-                databaseReference.child(jugada).child("jugador1").child("personaje").setValue(nombreP1);
-                databaseReference.child(jugada).child("jugador2").child("personaje").setValue(nombreP2);
+                if(j1.equals(usuarioIdentificado)){
+                    databaseReference.child("jugador1").child("personaje").setValue(nombreP1);
+                }else if(j2.equals(usuarioIdentificado)){
+                    databaseReference.child("jugador2").child("personaje").setValue(nombreP1);
+                }
+
+                //databaseReference.child("jugador1").child("personaje").setValue(nombreP1);
+                //databaseReference.child("jugador2").child("personaje").setValue(nombreP2);
 
 
 
