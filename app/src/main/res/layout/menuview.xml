@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:backgroundTint="#A32727">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:backgroundTint="@color/purple_200"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/imageViewContacto"
-            android:layout_width="188dp"
-            android:layout_height="175dp"
+            android:layout_width="186dp"
+            android:layout_height="179dp"
             android:layout_gravity="center"
             tools:srcCompat="@tools:sample/avatars" />
 
@@ -23,8 +24,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="monospace"
             android:text="TextView"
-            android:textSize="30sp"
+            android:textAlignment="center"
+            android:textColor="#EA7B19"
+            android:textSize="32sp"
             android:textStyle="bold" />
 
         <TextView
@@ -32,8 +36,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="monospace"
             android:text="TextView"
-            android:textSize="24sp" />
+            android:textAlignment="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:textColor="#787878"
+            android:textSize="15sp" />
 
     </LinearLayout>
 
