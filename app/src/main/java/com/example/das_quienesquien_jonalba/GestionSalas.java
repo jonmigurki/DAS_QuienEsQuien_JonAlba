@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +38,7 @@ public class GestionSalas extends AppCompatActivity {
     DatabaseReference salaRef;
     DatabaseReference salasRef;
 
+    String categoria = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,7 @@ public class GestionSalas extends AppCompatActivity {
                 // Unirse a una sala existente y entrar como el jugador2
                 //nombreSala = listaSalas.get(position);
 
+
                 nombreSala = "juego1";
 
                 HashMap<String,String> jugador = new HashMap<String,String>();
@@ -95,10 +99,32 @@ public class GestionSalas extends AppCompatActivity {
                 salaRef = database.getReference("juegos");
                 salaRef.child("juego1").child("jugador2").setValue(jugador);
 
+                salaRef = database.getReference("juegos/" + nombreSala);
+                salaRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        categoria = snapshot.child("categoria").getValue().toString();
+                    }
 
-                Intent intent = new Intent(getApplicationContext(), Juego.class);
-                intent.putExtra("usuario", nombreJugador);
-                startActivity(intent);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
+                Log.d("CATEGORIA", categoria);
+
+                if(categoria.equals("")){
+                    Toast.makeText(GestionSalas.this, "No se ha podido cargar correctamente la categoría", Toast.LENGTH_SHORT).show();
+                }else{
+                    Intent intent = new Intent(getApplicationContext(), Juego.class);
+                    intent.putExtra("usuario", nombreJugador);
+                    intent.putExtra("categoria", categoria);
+                    startActivity(intent);
+                }
+
+
 
                 //crearSala();
                 //salaRef.setValue(nombreJugador);

@@ -29,7 +29,7 @@ public class MenuPrincipal extends AppCompatActivity {
     ListView ListViewItem;
     List<ItemsMenuView> list;
 
-    String[] listaCategorias = {"Los Simpson", "ANHQV – Aquí NO Hay Quien Viva", "Disney"};
+    String[] listaCategorias = {"Los Simpson", "ANHQV – Aquí No Hay Quien Viva", "Disney"};
     String[] listaJugadores = {"JugadorPruebas", "Jugador2"};
 
     String nombreUsuario;
@@ -91,7 +91,19 @@ public class MenuPrincipal extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int i) {
                             // Obtenemos la categoría seleccionada por el usuario
-                            categoria = listaCategorias[i];
+                            String c = listaCategorias[i];
+                            switch(i){
+                                case 0:
+                                    categoria = "los_simpsons";
+                                    break;
+                                case 1:
+                                    categoria = "anhqv";
+                                    break;
+                                case 2:
+                                    categoria = "disney";
+                                    break;
+                            }
+                            //categoria = listaCategorias[i];
                             // Creamos la sala
                             crearSalaJuego();
 
@@ -127,6 +139,8 @@ public class MenuPrincipal extends AppCompatActivity {
 
         salaRef = database.getReference("juegos");
         salaRef.child("juego1").child("jugador1").setValue(jugador);
+        salaRef = database.getReference("juegos/" + nombreSala);
+        salaRef.child("categoria").setValue(categoria);
 
         Intent intent = new Intent(getApplicationContext(), Juego.class);
         intent.putExtra("usuario", nombreJugador);

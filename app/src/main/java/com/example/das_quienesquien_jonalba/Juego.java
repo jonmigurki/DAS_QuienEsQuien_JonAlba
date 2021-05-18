@@ -58,7 +58,7 @@ public class Juego extends AppCompatActivity {
 
     String nombreP1, nombreP2, imagenP;    //Variables que guardan el nombre del personaje ('Homer Simpson') y su imagen asociada ('los_simpsons_5.png')
 
-    String categoria = "los_simpsons";
+    String categoria = "";
 
     //Nombre que tiene la jugada actual en la base de datos de Firebase
     String jugada;
@@ -75,6 +75,7 @@ public class Juego extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             usuarioIdentificado = extras.getString("usuario");
+            categoria = extras.getString("categoria");
         }
 
 
@@ -82,6 +83,8 @@ public class Juego extends AppCompatActivity {
         rutapersonajes = getImagenesCategoria(categoria);
         nombrespersonajes = getNombresCategoria(categoria);
 
+        Log.d("HOLAA", "HOLAA");
+        Log.d("NOMBRES PERSONAJES", nombrespersonajes[0].toString());
 
         imagenPersonaje = (ImageView) findViewById(R.id.imgPersonaje);
 
@@ -271,6 +274,7 @@ public class Juego extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         return resultado;
 
