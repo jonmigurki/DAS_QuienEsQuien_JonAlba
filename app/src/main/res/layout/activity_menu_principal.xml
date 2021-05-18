@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="#1E1A5C"
     tools:context=".MenuPrincipal">
 
     <ListView
         android:id="@+id/ListViewItem"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:cacheColorHint="#24785B" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

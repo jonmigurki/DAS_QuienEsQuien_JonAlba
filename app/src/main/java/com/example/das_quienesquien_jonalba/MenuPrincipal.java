@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -28,7 +29,7 @@ public class MenuPrincipal extends AppCompatActivity {
     ListView ListViewItem;
     List<ItemsMenuView> list;
 
-    String[] listaCategorias = {"Los Simpson", "Otros"};
+    String[] listaCategorias = {"Los Simpson", "ANHQV – Aquí NO Hay Quien Viva", "Disney"};
     String[] listaJugadores = {"JugadorPruebas", "Jugador2"};
 
     String nombreUsuario;
@@ -38,6 +39,7 @@ public class MenuPrincipal extends AppCompatActivity {
 
     String nombreJugador = "";
     String nombreSala = "";
+    String categoria = "";
 
     FirebaseDatabase database;
     DatabaseReference salaRef;
@@ -81,25 +83,18 @@ public class MenuPrincipal extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
                 ItemsMenuView item = list.get(i);
                 // ............
-                if(item.nombre=="Categoría"){
-
-                    Toast.makeText(MenuPrincipal.this, "Categoría.", Toast.LENGTH_LONG).show();
+                if(item.id==1){
 
                     // Creamos el AlertDialog con las opciones disponibles
                     AlertDialog.Builder alert = new AlertDialog.Builder(MenuPrincipal.this);
                     alert.setSingleChoiceItems(listaCategorias, -1, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int i) {
-                            if(i==0){
-                                // Si se selecciona el primer elemento, es la categoría "Los Simpson"
+                            // Obtenemos la categoría seleccionada por el usuario
+                            categoria = listaCategorias[i];
+                            // Creamos la sala
+                            crearSalaJuego();
 
-                                // PASAR EL NOMBRE Y LO DE LOS JUGADORES,
-                                // ENVIAR PETICIÓN. FIREBASE.
-
-                            }else if (i==1){
-                                // Si se selecciona el primer elemento, es la categoría "---"
-
-                            }
                             // Cuando ya se ha selecionado
                             dialog.dismiss();
                         }
@@ -108,28 +103,8 @@ public class MenuPrincipal extends AppCompatActivity {
                     // Mostrar el alert
                     alertDia.show();
 
-                    // ............
-                }else if(item.nombre=="Crear juego"){
-                    //nombreSala = nombreJugador;
-                    nombreSala = "juego1";
 
-                    HashMap<String,String> jugador = new HashMap<String,String>();
-                    jugador.put("usuario", nombreJugador);
-                    jugador.put("personaje", "");
-
-                    salaRef = database.getReference("juegos");
-                    salaRef.child("juego1").child("jugador1").setValue(jugador);
-
-                    Intent intent = new Intent(getApplicationContext(), Juego.class);
-                    intent.putExtra("usuario", nombreJugador);
-                    startActivity(intent);
-
-                    //crearSala();
-
-                    //salaRef.setValue(nombreJugador);
-
-
-                }else if(item.nombre=="Unirse a juego"){
+                }else if(item.id==2){
                     Intent intent = new Intent (view.getContext(), GestionSalas.class);
                     intent.putExtra("usuario", nombreJugador);
                     startActivity(intent);
@@ -138,32 +113,26 @@ public class MenuPrincipal extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
 
 
-    private void crearSala() {
-        salaRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+    private void crearSalaJuego(){
+        //nombreSala = nombreJugador;
+        nombreSala = "juego1";
 
+        HashMap<String,String> jugador = new HashMap<String,String>();
+        jugador.put("usuario", nombreJugador);
+        jugador.put("personaje", "");
 
-                Intent intent = new Intent(getApplicationContext(), Juego.class);
-                intent.putExtra("nombreSala", nombreSala);
-                startActivity(intent);
-            }
+        salaRef = database.getReference("juegos");
+        salaRef.child("juego1").child("jugador1").setValue(jugador);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-                // Notificamos al usuario de que ha ocurrido un error
-                Toast.makeText(MenuPrincipal.this,"Ha ocurrido un error.",Toast.LENGTH_SHORT).show();
-            }
-        });
+        Intent intent = new Intent(getApplicationContext(), Juego.class);
+        intent.putExtra("usuario", nombreJugador);
+        intent.putExtra("categoria", categoria);
+        startActivity(intent);
     }
-
 
 
 
@@ -172,11 +141,8 @@ public class MenuPrincipal extends AppCompatActivity {
         list = new ArrayList<>();
 
         // Añadimos los items a la lista
-        list.add(new ItemsMenuView(1, R.drawable.interrogacion,"Categoría", "Escoge una categoría."));
-        list.add(new ItemsMenuView(2, R.drawable.usuario,"Crear juego", "Crea un juego y espera a que alguien se una."));
-        list.add(new ItemsMenuView(3, R.drawable.usuario,"Unirse a juego", "Únete a un juego ya creado."));
-
-
+        list.add(new ItemsMenuView(1, R.drawable.player1,"CREAR JUEGO", "Crea un juego nuevo eligiendo una categoría y espera a que se una un contrincante"));
+        list.add(new ItemsMenuView(2, R.drawable.player2,"UNIRSE", "Únete a un juego ya creado"));
 
         // Devolvemos la lista
         return list;

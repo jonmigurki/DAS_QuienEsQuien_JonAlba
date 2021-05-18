@@ -283,14 +283,14 @@ public class Juego extends AppCompatActivity {
         //Establecemos un número aleatorio entre 0 y 14
         Random r = new Random();
         int random1 = r.nextInt(15);
-        int random2 = r.nextInt(15);
+        //int random2 = r.nextInt(15);
 
         imagenPersonaje.setImageResource(rutapersonajes[random1]);
-        imagenPersonaje.setImageResource(rutapersonajes[random2]);
+        //imagenPersonaje.setImageResource(rutapersonajes[random2]);
 
         //Guardamos el personaje que le ha tocado
         nombreP1 = nombrespersonajes[random1];
-        nombreP2 = nombrespersonajes[random2];
+        //nombreP2 = nombrespersonajes[random2];
 
     }
 
