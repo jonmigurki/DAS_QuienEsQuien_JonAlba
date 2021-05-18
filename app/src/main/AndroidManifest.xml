@@ -19,13 +19,13 @@
         <activity
             android:name=".MenuPrincipal"
             android:theme="@style/MenuPrincipal"/>
-        <activity android:name=".Registro" />
+        <activity
+            android:name=".Registro"
+            android:theme="@style/Registro"/>
         <activity
             android:name=".Juego"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".Login" />
-
-
 
         <activity android:name=".MainActivity">
             <intent-filter>
