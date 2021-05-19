@@ -1,8 +1,10 @@
 package com.example.das_quienesquien_jonalba;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -113,6 +115,40 @@ public class GestionSalas extends AppCompatActivity {
                 });
 
 
+                AlertDialog.Builder adb = new AlertDialog.Builder(GestionSalas.this);
+                adb.setTitle("¿Quieres unirte a la partida?");
+                adb.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        salaRef = database.getReference("juegos/" + nombreSala);
+                        salaRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                categoria = snapshot.child("categoria").getValue().toString();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
+                        Intent intent = new Intent(getApplicationContext(), Juego.class);
+                        intent.putExtra("usuario", nombreJugador);
+                        intent.putExtra("categoria", categoria);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+                adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                adb.show();
+
+/*
                 Log.d("CATEGORIA", categoria);
 
                 if(categoria.equals("")){
@@ -123,7 +159,7 @@ public class GestionSalas extends AppCompatActivity {
                     intent.putExtra("categoria", categoria);
                     startActivity(intent);
                 }
-
+*/
 
 
                 //crearSala();
@@ -144,6 +180,7 @@ public class GestionSalas extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), Juego.class);
                 intent.putExtra("nombreSala", nombreJugador);
                 startActivity(intent);
+                finish();
             }
 
             @Override

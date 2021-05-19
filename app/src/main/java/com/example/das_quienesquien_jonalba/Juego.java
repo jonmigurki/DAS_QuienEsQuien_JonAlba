@@ -1,10 +1,12 @@
 package com.example.das_quienesquien_jonalba;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,9 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Random;
 
@@ -40,9 +40,8 @@ public class Juego extends AppCompatActivity {
     String usuarioIdentificado;
 
     TextView turnoJugador;
-    Button btnCambiarTurno, btnChat, btnDescartados;
+    Button btnResolver, btnChat, btnDescartados;
     ImageView imagenPersonaje;
-
 
 
     //VARIABLES DE LA JUGADA
@@ -93,7 +92,7 @@ public class Juego extends AppCompatActivity {
 
 
         firebaseDatabase = FirebaseDatabase.getInstance();
-     //   databaseReference = firebaseDatabase.getReference("juegos");
+        //   databaseReference = firebaseDatabase.getReference("juegos");
 
 /*
         HashMap<String,String> jugador = new HashMap<String,String>();
@@ -106,13 +105,12 @@ public class Juego extends AppCompatActivity {
         */
 
 
-
-       // Date fecha = Calendar.getInstance().getTime();
+        // Date fecha = Calendar.getInstance().getTime();
         String fecha = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         String hora = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
 
-     //   Log.d("FECHA", fecha);
-      //  Log.d("HORA", hora);
+        //   Log.d("FECHA", fecha);
+        //  Log.d("HORA", hora);
 
         //jugada = "juego_" + fecha + "_" + hora;
         jugada = "juego1";
@@ -141,10 +139,9 @@ public class Juego extends AppCompatActivity {
                 }*/
 
 
-
-                if(snapshot.child(jugada).hasChild("jugador1") && snapshot.child(jugada).hasChild("jugador2") && !juego){
+                if (snapshot.child(jugada).hasChild("jugador1") && snapshot.child(jugada).hasChild("jugador2") && !juego) {
                     turnoJugador.setText("Empieza la partida");
-                    juego=true;
+                    juego = true;
                     prejuego();
                 }
             }
@@ -156,8 +153,7 @@ public class Juego extends AppCompatActivity {
         });
 
 
-       // databaseReference.child(jugada).child("jugador2").setValue(jugador2);
-
+        // databaseReference.child(jugada).child("jugador2").setValue(jugador2);
 
 
         turnoJugador = (TextView) findViewById(R.id.txtTurnoJugador);
@@ -182,9 +178,9 @@ public class Juego extends AppCompatActivity {
 
 
         //Creamos el tablero con los personajes
-        RecyclerView lalista = (RecyclerView) findViewById(R.id.RecyclerView1);
+        RecyclerView lalista = (RecyclerView) findViewById(R.id.RecyclerView3);
 
-        ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(nombrespersonajes, rutapersonajes,this);
+        ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(nombrespersonajes, rutapersonajes, this);
         lalista.setAdapter(eladaptador);
 
         GridLayoutManager elLayoutRejillaIgual = new GridLayoutManager(this, 5, GridLayoutManager.VERTICAL, false);
@@ -217,253 +213,401 @@ public class Juego extends AppCompatActivity {
 
 
         //MÉTODO CON EL QUE EMPIEZA EL JUEGO
-       // juego();
+        // juego();
 
         btnDescartados = (Button) findViewById(R.id.btnDescartados);
 
-    }
 
+        btnResolver = (Button) findViewById(R.id.btnResolver);
 
-    //Obtenemos una lista con todas las instancias de las imágenes de la categoría elegida
-    private int[] getImagenesCategoria(String categoria) {
-
-        int[] resultado = new int[15];
-
-        for (int x = 0; x < 15; x++) {
-
-            int im = getResources().getIdentifier(categoria + "_" + String.valueOf(x + 1), "drawable", Juego.this.getPackageName());
-            resultado[x] = im;
-
-        }
-
-        return resultado;
-
-    }
-
-
-    //Obtenemos una lista con todos los nombres de los personajes de la categoría elegida
-    private String[] getNombresCategoria(String categoria) {
-
-        String[] resultado = new String[15];
-
-        InputStream is = this.getResources().openRawResource(R.raw.categorias);
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-
-
-        try {
-            String linea = reader.readLine();
-
-            boolean categoriaEncontrada = false;
-
-            while (!categoriaEncontrada) {
-
-                linea = reader.readLine();
-
-                if (linea.equals(categoria)) {
-                    categoriaEncontrada = true;
-
-                }
-
-            }
-
-            linea = reader.readLine();
-
-            resultado = linea.split(";");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        return resultado;
-
-    }
-
-
-
-    private void obtenerPersonajeAleatorio(){
-
-        //Establecemos un número aleatorio entre 0 y 14
-        Random r = new Random();
-        int random1 = r.nextInt(15);
-        //int random2 = r.nextInt(15);
-
-        imagenPersonaje.setImageResource(rutapersonajes[random1]);
-        //imagenPersonaje.setImageResource(rutapersonajes[random2]);
-
-        //Guardamos el personaje que le ha tocado
-        nombreP1 = nombrespersonajes[random1];
-        //nombreP2 = nombrespersonajes[random2];
-
-    }
-
-
-
-
-    public void prejuego() {
-
-        //Se acaba de empezar la partida
-        databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
-
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String j1 = snapshot.child("jugador1").child("usuario").getValue().toString();
-                String j2 = snapshot.child("jugador2").child("usuario").getValue().toString();
-
-                if(j1.equals(usuarioIdentificado)){
-                    databaseReference.child("jugador1").child("personaje").setValue(nombreP1);
-                }else if(j2.equals(usuarioIdentificado)){
-                    databaseReference.child("jugador2").child("personaje").setValue(nombreP1);
-                }
-
-                //databaseReference.child("jugador1").child("personaje").setValue(nombreP1);
-                //databaseReference.child("jugador2").child("personaje").setValue(nombreP2);
-
-
-
-                jugador1 = j1;
-                jugador2 = j2;
-
-
-                databaseReference.child("turno").setValue(jugador1);
-                turno = jugador1;
-
-                databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
-                databaseReference.child("ronda").setValue(1);
-                ronda = 1;
-                databaseReference.child("preguntaRealizada").setValue("false");
-                preguntaRealizada = false;
-                databaseReference.child("respuestaRealizada").setValue("false");
-                respuestaRealizada = false;
-
-                juego();
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-
-
-    }
-
-    public void juego(){
-
-
-        databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                btnDescartados.setVisibility(View.INVISIBLE);
-
-                if(snapshot.child("turno").getValue().toString().equals(usuarioIdentificado)){
-
-                    //MI TURNO
-                    //Debo escribir la pregunta
-
-                    if(snapshot.child("preguntaRealizada").getValue().toString().equals("false")){
-                        turnoJugador.setText("Vete al chat y haz una pregunta");
-                    }
-
-                    if(snapshot.child("respuestaRealizada").getValue().toString().equals("true")){
-
-                        //Se deben descartar los personajes que no cumplan con la característica
-
-                        turnoJugador.setText("Te toca descartar los personajes");
-
-                        btnDescartados.setVisibility(View.VISIBLE);
-
-                    } else if(snapshot.child("respuestaRealizada").getValue().toString().equals("false") &&
-                    snapshot.child("preguntaRealizada").getValue().toString().equals("true")){
-
-                        turnoJugador.setText("Espera a que el otro jugador responda");
-
-                    }
-
-
-
-
-
-                }else if(!(snapshot.child("turno").getValue().toString().equals(usuarioIdentificado))){
-
-                    //EL TURNO DEL OTRO JUGADOR
-                    //Debo responder a su pregunta
-
-                    if(snapshot.child("respuestaRealizada").getValue().toString().equals("true")){
-                        turnoJugador.setText("Espera a que el otro jugador descarte sus personajes");
-                    }
-
-
-                    if(snapshot.child("preguntaRealizada").getValue().toString().equals("true") &&
-                    snapshot.child("respuestaRealizada").getValue().toString().equals("false")){
-
-                        turnoJugador.setText("Responde en el chat");
-
-                    }else if(snapshot.child("preguntaRealizada").getValue().toString().equals("false")){
-
-                        turnoJugador.setText("Espera a que el otro jugador pregunte");
-                    }
-
-
-                }
-
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-        btnDescartados.setOnClickListener(new View.OnClickListener() {
+        btnResolver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+                AlertDialog.Builder adb = new AlertDialog.Builder(Juego.this);
+                adb.setTitle("¿Deseas resolver ya? No podrás volver");
+                adb.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
-                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.child("turno").getValue().toString().equals(jugador1)){
-                            databaseReference.child("turno").setValue(jugador2);
-                        }else if(snapshot.child("turno").getValue().toString().equals(jugador2)){
-                            databaseReference.child("turno").setValue(jugador1);
-                        }
-
-                        //Al cambiar el turno, volvemos a empezar con una nueva ronda (no se han hecho aún pregunta y respuesta)
-                        databaseReference.child("preguntaRealizada").setValue("false");
-                        preguntaRealizada = false;
-                        databaseReference.child("respuestaRealizada").setValue("false");
-                        respuestaRealizada = false;
-
-
-                        btnDescartados.setVisibility(View.INVISIBLE);
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                        Intent i = new Intent(Juego.this, Resolver.class);
+                        i.putExtra("jugada", jugada);
+                        i.putExtra("usuario", usuarioIdentificado);
+                        i.putExtra("nombrespersonajes", nombrespersonajes);
+                        i.putExtra("rutapersonajes", rutapersonajes);
+                        startActivity(i);
+                        finish();
 
                     }
                 });
 
+                adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
 
+                adb.show();
             }
         });
 
+    }
 
+
+        //Obtenemos una lista con todas las instancias de las imágenes de la categoría elegida
+        private int[] getImagenesCategoria (String categoria){
+
+            int[] resultado = new int[15];
+
+            for (int x = 0; x < 15; x++) {
+
+                int im = getResources().getIdentifier(categoria + "_" + String.valueOf(x + 1), "drawable", Juego.this.getPackageName());
+                resultado[x] = im;
+
+            }
+
+            return resultado;
+
+        }
+
+
+        //Obtenemos una lista con todos los nombres de los personajes de la categoría elegida
+        private String[] getNombresCategoria (String categoria){
+
+            String[] resultado = new String[15];
+
+            InputStream is = this.getResources().openRawResource(R.raw.categorias);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+
+
+            try {
+                String linea = reader.readLine();
+
+                boolean categoriaEncontrada = false;
+
+                while (!categoriaEncontrada) {
+
+                    linea = reader.readLine();
+
+                    if (linea.equals(categoria)) {
+                        categoriaEncontrada = true;
+
+                    }
+
+                }
+
+                linea = reader.readLine();
+
+                resultado = linea.split(";");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            return resultado;
+
+        }
+
+
+        private void obtenerPersonajeAleatorio () {
+
+            //Establecemos un número aleatorio entre 0 y 14
+            Random r = new Random();
+            int random1 = r.nextInt(15);
+            //int random2 = r.nextInt(15);
+
+            imagenPersonaje.setImageResource(rutapersonajes[random1]);
+            //imagenPersonaje.setImageResource(rutapersonajes[random2]);
+
+            //Guardamos el personaje que le ha tocado
+            nombreP1 = nombrespersonajes[random1];
+            //nombreP2 = nombrespersonajes[random2];
+
+        }
+
+
+        public void prejuego () {
+
+            //Se acaba de empezar la partida
+            databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String j1 = snapshot.child("jugador1").child("usuario").getValue().toString();
+                    String j2 = snapshot.child("jugador2").child("usuario").getValue().toString();
+
+                    if (j1.equals(usuarioIdentificado)) {
+                        databaseReference.child("jugador1").child("personaje").setValue(nombreP1);
+                    } else if (j2.equals(usuarioIdentificado)) {
+                        databaseReference.child("jugador2").child("personaje").setValue(nombreP1);
+                    }
+
+                    //databaseReference.child("jugador1").child("personaje").setValue(nombreP1);
+                    //databaseReference.child("jugador2").child("personaje").setValue(nombreP2);
+
+
+                    jugador1 = j1;
+                    jugador2 = j2;
+
+
+                    databaseReference.child("turno").setValue(jugador1);
+                    turno = jugador1;
+
+                    databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+                    databaseReference.child("ronda").setValue(1);
+                    ronda = 1;
+                    databaseReference.child("preguntaRealizada").setValue("false");
+                    preguntaRealizada = false;
+                    databaseReference.child("respuestaRealizada").setValue("false");
+                    respuestaRealizada = false;
+
+                    juego();
+
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+        }
+
+        public void juego () {
+
+
+            databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    btnDescartados.setVisibility(View.INVISIBLE);
+
+                    Log.d("HOLAAAAA", "ESTOY AQUII PRUEBA 11 JUEGO");
+                    Log.d("USUARIO IDENTIFICADO", usuarioIdentificado);
+
+                    if (snapshot.child("turno").getValue().toString().equals(usuarioIdentificado)) {
+
+                        //MI TURNO
+                        //Debo escribir la pregunta
+
+                        if (snapshot.child("preguntaRealizada").getValue().toString().equals("false")) {
+                            turnoJugador.setText("Vete al chat y haz una pregunta");
+                        }
+
+                        if (snapshot.child("respuestaRealizada").getValue().toString().equals("true")) {
+
+                            //Se deben descartar los personajes que no cumplan con la característica
+
+                            turnoJugador.setText("Te toca descartar los personajes");
+
+                            btnDescartados.setVisibility(View.VISIBLE);
+
+                        } else if (snapshot.child("respuestaRealizada").getValue().toString().equals("false") &&
+                                snapshot.child("preguntaRealizada").getValue().toString().equals("true")) {
+
+                            turnoJugador.setText("Espera a que el otro jugador responda");
+
+                        }
+
+
+                    } else if (!(snapshot.child("turno").getValue().toString().equals(usuarioIdentificado))) {
+
+                        //EL TURNO DEL OTRO JUGADOR
+                        //Debo responder a su pregunta
+
+                        if (snapshot.child("respuestaRealizada").getValue().toString().equals("true")) {
+                            turnoJugador.setText("Espera a que el otro jugador descarte sus personajes");
+                        }
+
+
+                        if (snapshot.child("preguntaRealizada").getValue().toString().equals("true") &&
+                                snapshot.child("respuestaRealizada").getValue().toString().equals("false")) {
+
+                            turnoJugador.setText("Responde en el chat");
+
+                        } else if (snapshot.child("preguntaRealizada").getValue().toString().equals("false")) {
+
+                            turnoJugador.setText("Espera a que el otro jugador pregunte");
+                        }
+
+
+                    }
+
+
+                    if(snapshot.child("ganador").exists() && !(snapshot.child("comprueba").getValue().toString().equals(usuarioIdentificado))){
+
+
+                        if(snapshot.child("ganador").getValue().toString().equals(usuarioIdentificado)){        //Gana el que no ha resuelto (el que resuelve ha fallado)
+
+                            mostrarAnimacion("ganado");
+
+                        }else{
+
+                            mostrarAnimacion("perdido");
+
+                        }
+
+
+
+
+                    }
+
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+            btnDescartados.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.child("turno").getValue().toString().equals(jugador1)) {
+                                databaseReference.child("turno").setValue(jugador2);
+                            } else if (snapshot.child("turno").getValue().toString().equals(jugador2)) {
+                                databaseReference.child("turno").setValue(jugador1);
+                            }
+
+                            //Al cambiar el turno, volvemos a empezar con una nueva ronda (no se han hecho aún pregunta y respuesta)
+                            databaseReference.child("preguntaRealizada").setValue("false");
+                            preguntaRealizada = false;
+                            databaseReference.child("respuestaRealizada").setValue("false");
+                            respuestaRealizada = false;
+
+
+                            btnDescartados.setVisibility(View.INVISIBLE);
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+
+                }
+            });
+
+
+        }
+
+        public void mostrarAnimacion(String resultado) {
+
+            if (resultado.equals("ganado")) {
+
+                ImageView image = new ImageView(Juego.this);
+                String i = "ganado";
+                int im = getResources().getIdentifier(i, "drawable", this.getPackageName());
+                image.setImageResource(im);
+
+
+                AlertDialog.Builder adb = new AlertDialog.Builder(this);
+                adb.setTitle("¡¡HAS GANADO!!");
+                adb.setView(image);
+                adb.setPositiveButton("Compartir", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                        Intent i = new Intent(Juego.this, MenuPrincipal.class);
+                        i.putExtra("usuario", usuarioIdentificado);
+                        startActivity(i);
+
+
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_SEND);
+                        intent.putExtra(Intent.EXTRA_TEXT, "¡HE GANADO AL QUIEN ES QUIEN. CORRE Y DESCÁRGATELO, QUE ESTÁ SUPER CHULO!");
+                        intent.setType("text/plain");
+                        intent.setPackage("com.whatsapp");
+                        startActivity(intent);
+
+
+                        finish();
+
+
+                    }
+                });
+
+                adb.setNegativeButton("Salir", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent i = new Intent(Juego.this, MenuPrincipal.class);
+                        i.putExtra("usuario", usuarioIdentificado);
+                        startActivity(i);
+                        finish();
+
+                    }
+                });
+
+                adb.show();
+
+
+            } else {
+
+
+                ImageView image = new ImageView(Juego.this);
+                String i = "perdido";
+                int im = getResources().getIdentifier(i, "drawable", this.getPackageName());
+                image.setImageResource(im);
+
+
+                AlertDialog.Builder adb = new AlertDialog.Builder(this);
+                adb.setTitle("¡¡HAS PERDIDO!!");
+                adb.setView(image);
+                adb.setPositiveButton("Compartir", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                        Intent i = new Intent(Juego.this, MenuPrincipal.class);
+                        i.putExtra("usuario", usuarioIdentificado);
+                        startActivity(i);
+
+
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_SEND);
+                        intent.putExtra(Intent.EXTRA_TEXT, "He perdido al QUIEN ES QUIEN :( \n Pero nunca me rendiré!!!");
+                        intent.setType("text/plain");
+                        intent.setPackage("com.whatsapp");
+                        startActivity(intent);
+
+
+                        finish();
+
+
+                    }
+                });
+
+                adb.setNegativeButton("Salir", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent i = new Intent(Juego.this, MenuPrincipal.class);
+                        i.putExtra("usuario", usuarioIdentificado);
+                        startActivity(i);
+                        finish();
+
+                    }
+                });
+
+                adb.show();
+
+
+            }
+
+        }
 
     }
 
-}

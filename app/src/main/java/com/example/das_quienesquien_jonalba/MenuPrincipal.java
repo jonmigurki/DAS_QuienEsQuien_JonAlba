@@ -146,6 +146,7 @@ public class MenuPrincipal extends AppCompatActivity {
         intent.putExtra("usuario", nombreJugador);
         intent.putExtra("categoria", categoria);
         startActivity(intent);
+        finish();
     }
 
 

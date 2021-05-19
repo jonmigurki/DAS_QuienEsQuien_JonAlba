@@ -12,21 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Resolver"></activity>
         <activity android:name=".GestionSalas" />
         <activity
             android:name=".Chat"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".MenuPrincipal"
-            android:theme="@style/MenuPrincipal"/>
+            android:theme="@style/MenuPrincipal" />
         <activity
             android:name=".Registro"
-            android:theme="@style/Registro"/>
+            android:theme="@style/Registro" />
         <activity
             android:name=".Juego"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".Login" />
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,9 +34,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-
     </application>
 
 </manifest>

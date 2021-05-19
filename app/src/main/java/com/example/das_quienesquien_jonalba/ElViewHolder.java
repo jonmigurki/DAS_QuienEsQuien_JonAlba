@@ -1,8 +1,8 @@
 package com.example.das_quienesquien_jonalba;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -29,12 +30,47 @@ public class ElViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(seleccion[getAdapterPosition()]==true){
-                    seleccion[getAdapterPosition()]=false;
-                    laimagen.setColorFilter(null);
-                }else{
-                    seleccion[getAdapterPosition()]=true;
-                    laimagen.setColorFilter(Color.BLACK);
+
+                String clase = elcontexto.getClass().toString();
+
+                switch (clase) {
+                    case "class com.example.das_quienesquien_jonalba.Juego":
+
+
+                        if (seleccion[getAdapterPosition()] == true) {
+                            seleccion[getAdapterPosition()] = false;
+                            laimagen.setColorFilter(null);
+                        } else {
+                            seleccion[getAdapterPosition()] = true;
+                            laimagen.setColorFilter(Color.BLACK);
+
+                        }
+
+                        break;
+
+                    case "class com.example.das_quienesquien_jonalba.Resolver":
+
+
+                       AlertDialog.Builder adb = new AlertDialog.Builder(elcontexto);
+                        adb.setTitle("¿Crees que es " + eltexto.getText().toString() + "?");
+                        adb.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                Resolver r = (Resolver) elcontexto;
+                                r.comprobarPersonaje(eltexto.getText().toString());
+                                dialog.dismiss();
+
+                            }
+                        });
+
+                        adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        adb.show();
+
 
                 }
             }
