@@ -1,6 +1,8 @@
 package com.example.das_quienesquien_jonalba;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +15,11 @@ import java.util.ArrayList;
 public class AdaptadorChat extends RecyclerView.Adapter<HolderChat> {
 
     private ArrayList<Mensaje> listaMensajes = new ArrayList<>();
+    private String usuarioIdentificado;
     private Context context;
 
-    public AdaptadorChat(Context context) {
+    public AdaptadorChat(String usuarioIdentificado, Context context) {
+        this.usuarioIdentificado = usuarioIdentificado;
         this.context = context;
     }
 
@@ -36,6 +40,15 @@ public class AdaptadorChat extends RecyclerView.Adapter<HolderChat> {
     public void onBindViewHolder(@NonNull HolderChat holder, int position) {
         holder.elusuario.setText(listaMensajes.get(position).getUsuario());
         holder.elmensaje.setText(listaMensajes.get(position).getMensaje());
+
+        if(listaMensajes.get(position).getUsuario().toString().equals(this.usuarioIdentificado)){
+            holder.elusuario.setGravity(Gravity.RIGHT);
+            holder.elmensaje.setGravity(Gravity.RIGHT);
+            holder.cardView.setCardBackgroundColor(Color.CYAN);
+        }else{
+            holder.cardView.setCardBackgroundColor(Color.GREEN);
+        }
+
 
     }
 

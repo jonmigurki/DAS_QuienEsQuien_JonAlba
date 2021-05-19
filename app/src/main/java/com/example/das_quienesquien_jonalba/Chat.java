@@ -37,6 +37,10 @@ public class Chat extends AppCompatActivity {
     DatabaseReference databaseReference;
 
 
+    //Este booleano sirve para controlar uno de los listeners y que no se visualicen los mensajes por duplicado
+    boolean recienEntrado = true;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +52,9 @@ public class Chat extends AppCompatActivity {
             nombreSala = extras.getString("sala");
         }
 
-        adaptador = new AdaptadorChat(this);
+        recienEntrado = true;
+
+        adaptador = new AdaptadorChat(usuarioIdentificado, this);
 
         lalista = (RecyclerView) findViewById(R.id.RecyclerView2);
         LinearLayoutManager layout = new LinearLayoutManager(this);
@@ -87,20 +93,26 @@ public class Chat extends AppCompatActivity {
                             //El jugador debe responder a la pregunta
                             else{
 
-                                databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala + "/mensajes");
+                                if(snapshot.child("respuestaRealizada").getValue().toString().equals("true")){
+                                    Toast.makeText(Chat.this, "Sólo puedes dar una respuesta por ronda", Toast.LENGTH_SHORT).show();
+                                }else {
 
-                                Mensaje m = new Mensaje(usuarioIdentificado, txtMensaje.getText().toString());
-                                databaseReference.push().setValue(m);
-                                txtMensaje.setText("");
+                                    databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala + "/mensajes");
 
-                                View view = Chat.this.getCurrentFocus();
-                                if (view != null) {
-                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                    Mensaje m = new Mensaje(usuarioIdentificado, txtMensaje.getText().toString());
+                                    databaseReference.push().setValue(m);
+                                    txtMensaje.setText("");
+
+                                    View view = Chat.this.getCurrentFocus();
+                                    if (view != null) {
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                    }
+
+                                    databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
+                                    databaseReference.child("respuestaRealizada").setValue("true");
+
                                 }
-
-                                databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
-                                databaseReference.child("respuestaRealizada").setValue("true");
 
                             }
 
@@ -158,16 +170,18 @@ public class Chat extends AppCompatActivity {
 
 
         //Obtenemos los mensajes de Firebase (para que cuando salgamos del chat y volvamos a entrar, no se pierdan los mensajes del Recycler)
-        databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala + "/mensajes");
+     /*   databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala + "/mensajes");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                for(DataSnapshot ds : snapshot.getChildren()) {
-                    Mensaje m = ds.getValue(Mensaje.class);
-                    adaptador.addMensaje(m);
+                if(recienEntrado) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        Mensaje m = ds.getValue(Mensaje.class);
+                        adaptador.addMensaje(m);
+                    }
+                    recienEntrado=false;
                 }
-
             }
 
             @Override
@@ -175,7 +189,7 @@ public class Chat extends AppCompatActivity {
 
             }
         });
-
+*/
 
         //Cuando el otro jugador envíe un mensaje y se guarde en Firebase,
         //recoger ese mensaje y mostrarlo en el chat

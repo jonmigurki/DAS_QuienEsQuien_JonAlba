@@ -6,18 +6,39 @@
     android:layout_height="match_parent"
     tools:context=".Juego">
 
+    <TextView
+        android:id="@+id/txtInformacionPartida"
+        android:layout_width="207dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="112dp"
+        android:fontFamily="@font/peralta"
+        android:gravity="center"
+        android:text="Esperando al Jugador 2..."
+        android:textColor="#007787"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtSala"
+        android:layout_width="107dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="4dp"
+        android:fontFamily="@font/luckiest_guy"
+        android:gravity="center"
+        android:text="SALA 120"
+        android:textColor="#155A91"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/txtTurnoJugador"
-            android:layout_width="match_parent"
-            android:layout_height="40dp" />
+        app:layout_constraintTop_toBottomOf="@+id/txtInformacionPartida">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/RecyclerView3"
@@ -29,9 +50,12 @@
 
     <Button
         android:id="@+id/btnChat"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
+        android:layout_width="110dp"
+        android:layout_height="48dp"
         android:layout_marginTop="28dp"
+        android:backgroundTint="#7CE2EF"
+        android:drawableLeft="@drawable/chat"
+        android:fontFamily="@font/krona_one"
         android:text="Chat"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.927"
@@ -40,36 +64,59 @@
 
     <Button
         android:id="@+id/btnResolver"
-        android:layout_width="102dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="136dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#23A3B3"
+        android:drawableLeft="@drawable/comprobar"
+        android:fontFamily="@font/krona_one"
         android:text="Resolver"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.935"
+        app:layout_constraintHorizontal_bias="0.972"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnChat" />
 
+    <TextView
+        android:id="@+id/txtTuPersonaje"
+        android:layout_width="161dp"
+        android:layout_height="18dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/krona_one"
+        android:text="TU PERSONAJE:"
+        android:textColor="#17727E"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.113"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
     <ImageView
         android:id="@+id/imgPersonaje"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="163dp"
+        android:layout_height="161dp"
+        android:layout_marginTop="40dp"
         android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.114"
+        app:layout_constraintHorizontal_bias="0.101"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         app:srcCompat="@drawable/ic_launcher_background" />
 
     <Button
         android:id="@+id/btnDescartados"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="112dp"
+        android:layout_height="38dp"
         android:layout_marginTop="16dp"
+        android:backgroundTint="#147067"
+        android:drawableLeft="@drawable/hecho"
+        android:fontFamily="@font/krona_one"
         android:text="Hecho"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.879"
+        app:layout_constraintHorizontal_bias="0.937"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnResolver" />
 

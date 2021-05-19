@@ -26,9 +26,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Random;
 
 public class Juego extends AppCompatActivity {
@@ -67,6 +64,8 @@ public class Juego extends AppCompatActivity {
     int[] rutapersonajes;
     String[] nombrespersonajes;
 
+    TextView txtSala;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +77,10 @@ public class Juego extends AppCompatActivity {
             categoria = extras.getString("categoria");
             nombreSala = extras.getString("sala");
         }
+
+
+        txtSala = (TextView) findViewById(R.id.txtSala);
+        txtSala.setText("SALA " + nombreSala.split("_")[0].substring(4));
 
 
         //  int[] personajes = {R.drawable.bart, R.drawable.edna, R.drawable.homer, R.drawable.lisa, R.drawable.seymour};
@@ -158,7 +161,7 @@ public class Juego extends AppCompatActivity {
         // databaseReference.child(jugada).child("jugador2").setValue(jugador2);
 
 
-        turnoJugador = (TextView) findViewById(R.id.txtTurnoJugador);
+        turnoJugador = (TextView) findViewById(R.id.txtInformacionPartida);
 
  /*       databaseReference = FirebaseDatabase.getInstance().getReference().child("juego");
 
@@ -206,10 +209,14 @@ public class Juego extends AppCompatActivity {
         btnChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Juego.this, Chat.class);
-                i.putExtra("usuario", usuarioIdentificado);
-                i.putExtra("sala", nombreSala);
-                startActivity(i);
+                if(juego) {
+                    Intent i = new Intent(Juego.this, Chat.class);
+                    i.putExtra("usuario", usuarioIdentificado);
+                    i.putExtra("sala", nombreSala);
+                    startActivity(i);
+                }else{
+                    Toast.makeText(Juego.this, "Espera a que el Jugador 2 entre", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -226,56 +233,58 @@ public class Juego extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                if(juego) {
+                    databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
 
-                databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.child("turno").getValue().toString().equals(usuarioIdentificado)) {
 
-                        if (snapshot.child("turno").getValue().toString().equals(usuarioIdentificado)) {
+                                AlertDialog.Builder adb = new AlertDialog.Builder(Juego.this);
+                                adb.setTitle("¿Deseas resolver ya? No podrás volver");
+                                adb.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
 
-                            AlertDialog.Builder adb = new AlertDialog.Builder(Juego.this);
-                            adb.setTitle("¿Deseas resolver ya? No podrás volver");
-                            adb.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
+                                        Intent i = new Intent(Juego.this, Resolver.class);
+                                        i.putExtra("sala", nombreSala);
+                                        i.putExtra("usuario", usuarioIdentificado);
+                                        i.putExtra("nombrespersonajes", nombrespersonajes);
+                                        i.putExtra("rutapersonajes", rutapersonajes);
+                                        startActivity(i);
+                                        finish();
 
-                                    Intent i = new Intent(Juego.this, Resolver.class);
-                                    i.putExtra("sala", nombreSala);
-                                    i.putExtra("usuario", usuarioIdentificado);
-                                    i.putExtra("nombrespersonajes", nombrespersonajes);
-                                    i.putExtra("rutapersonajes", rutapersonajes);
-                                    startActivity(i);
-                                    finish();
+                                    }
+                                });
 
-                                }
-                            });
+                                adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
 
-                            adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-
-                            adb.show();
+                                adb.show();
 
 
-                        } else {
+                            } else {
 
-                            Toast.makeText(Juego.this, "No puedes resolver hasta que sea tu turno", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Juego.this, "No puedes resolver hasta que sea tu turno", Toast.LENGTH_SHORT).show();
+
+                            }
+
 
                         }
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
+                        }
+                    });
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-
+                }else{
+                    Toast.makeText(Juego.this, "Espera a que el Jugador 2 entre", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -432,7 +441,7 @@ public class Juego extends AppCompatActivity {
 
                             //Se deben descartar los personajes que no cumplan con la característica
 
-                            turnoJugador.setText("Te toca descartar los personajes");
+                            turnoJugador.setText("Ya ha respondido. Lee la respuesta en el chat y descarta a los personajes");
 
                             btnDescartados.setVisibility(View.VISIBLE);
 
@@ -457,7 +466,7 @@ public class Juego extends AppCompatActivity {
                         if (snapshot.child("preguntaRealizada").getValue().toString().equals("true") &&
                                 snapshot.child("respuestaRealizada").getValue().toString().equals("false")) {
 
-                            turnoJugador.setText("Responde en el chat");
+                            turnoJugador.setText("El otro jugador ya ha preguntado. Responde en el chat");
 
                         } else if (snapshot.child("preguntaRealizada").getValue().toString().equals("false")) {
 
