@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -59,8 +60,8 @@ public class Juego extends AppCompatActivity {
 
     String categoria = "";
 
-    //Nombre que tiene la jugada actual en la base de datos de Firebase
-    String jugada;
+    //Nombre que tiene la sala actual en la base de datos de Firebase
+    String nombreSala;
 
     //Guardamos toda la información acerca de los personajes de la categoría elegida en cada jugada
     int[] rutapersonajes;
@@ -75,6 +76,7 @@ public class Juego extends AppCompatActivity {
         if (extras != null) {
             usuarioIdentificado = extras.getString("usuario");
             categoria = extras.getString("categoria");
+            nombreSala = extras.getString("sala");
         }
 
 
@@ -106,14 +108,14 @@ public class Juego extends AppCompatActivity {
 
 
         // Date fecha = Calendar.getInstance().getTime();
-        String fecha = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-        String hora = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+    //    String fecha = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+    //    String hora = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
 
         //   Log.d("FECHA", fecha);
         //  Log.d("HORA", hora);
 
         //jugada = "juego_" + fecha + "_" + hora;
-        jugada = "juego1";
+       // jugada = "juego1";
 
 
         //Guardamos a los jugadores en la nueva partida
@@ -139,7 +141,7 @@ public class Juego extends AppCompatActivity {
                 }*/
 
 
-                if (snapshot.child(jugada).hasChild("jugador1") && snapshot.child(jugada).hasChild("jugador2") && !juego) {
+                if (snapshot.child(nombreSala).hasChild("jugador1") && snapshot.child(nombreSala).hasChild("jugador2") && !juego) {
                     turnoJugador.setText("Empieza la partida");
                     juego = true;
                     prejuego();
@@ -206,7 +208,7 @@ public class Juego extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(Juego.this, Chat.class);
                 i.putExtra("usuario", usuarioIdentificado);
-                i.putExtra("jugada", jugada);
+                i.putExtra("sala", nombreSala);
                 startActivity(i);
             }
         });
@@ -224,29 +226,56 @@ public class Juego extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder adb = new AlertDialog.Builder(Juego.this);
-                adb.setTitle("¿Deseas resolver ya? No podrás volver");
-                adb.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
 
-                        Intent i = new Intent(Juego.this, Resolver.class);
-                        i.putExtra("jugada", jugada);
-                        i.putExtra("usuario", usuarioIdentificado);
-                        i.putExtra("nombrespersonajes", nombrespersonajes);
-                        i.putExtra("rutapersonajes", rutapersonajes);
-                        startActivity(i);
-                        finish();
+                databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
+
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        if (snapshot.child("turno").getValue().toString().equals(usuarioIdentificado)) {
+
+                            AlertDialog.Builder adb = new AlertDialog.Builder(Juego.this);
+                            adb.setTitle("¿Deseas resolver ya? No podrás volver");
+                            adb.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    Intent i = new Intent(Juego.this, Resolver.class);
+                                    i.putExtra("sala", nombreSala);
+                                    i.putExtra("usuario", usuarioIdentificado);
+                                    i.putExtra("nombrespersonajes", nombrespersonajes);
+                                    i.putExtra("rutapersonajes", rutapersonajes);
+                                    startActivity(i);
+                                    finish();
+
+                                }
+                            });
+
+                            adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            adb.show();
+
+
+                        } else {
+
+                            Toast.makeText(Juego.this, "No puedes resolver hasta que sea tu turno", Toast.LENGTH_SHORT).show();
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
                     }
                 });
 
-                adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
 
-                adb.show();
             }
         });
 
@@ -330,7 +359,7 @@ public class Juego extends AppCompatActivity {
         public void prejuego () {
 
             //Se acaba de empezar la partida
-            databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+            databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
 
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -355,7 +384,7 @@ public class Juego extends AppCompatActivity {
                     databaseReference.child("turno").setValue(jugador1);
                     turno = jugador1;
 
-                    databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+                    databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
                     databaseReference.child("ronda").setValue(1);
                     ronda = 1;
                     databaseReference.child("preguntaRealizada").setValue("false");
@@ -380,7 +409,7 @@ public class Juego extends AppCompatActivity {
         public void juego () {
 
 
-            databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+            databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -471,7 +500,7 @@ public class Juego extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+                    databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
 
                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

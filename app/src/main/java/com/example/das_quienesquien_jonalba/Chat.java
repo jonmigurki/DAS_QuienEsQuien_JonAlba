@@ -27,7 +27,7 @@ public class Chat extends AppCompatActivity {
     EditText txtMensaje;
     Button btnEnviar, btnAtras;
 
-    String usuarioIdentificado, jugada;
+    String usuarioIdentificado, nombreSala;
 
     AdaptadorChat adaptador;
 
@@ -45,7 +45,7 @@ public class Chat extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             usuarioIdentificado = extras.getString("usuario");
-            jugada = extras.getString("jugada");
+            nombreSala = extras.getString("sala");
         }
 
         adaptador = new AdaptadorChat(this);
@@ -71,7 +71,7 @@ public class Chat extends AppCompatActivity {
             public void onClick(View v) {
                // adaptador.addMensaje(new Mensaje(usuarioIdentificado, txtMensaje.getText().toString()));
 
-                databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+                databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -87,7 +87,7 @@ public class Chat extends AppCompatActivity {
                             //El jugador debe responder a la pregunta
                             else{
 
-                                databaseReference = firebaseDatabase.getReference("juegos/" + jugada + "/mensajes");
+                                databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala + "/mensajes");
 
                                 Mensaje m = new Mensaje(usuarioIdentificado, txtMensaje.getText().toString());
                                 databaseReference.push().setValue(m);
@@ -99,7 +99,7 @@ public class Chat extends AppCompatActivity {
                                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                                 }
 
-                                databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+                                databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
                                 databaseReference.child("respuestaRealizada").setValue("true");
 
                             }
@@ -107,7 +107,7 @@ public class Chat extends AppCompatActivity {
                         }else{
 
                             if(snapshot.child("turno").getValue().toString().equals(usuarioIdentificado)) {
-                                databaseReference = firebaseDatabase.getReference("juegos/" + jugada + "/mensajes");
+                                databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala + "/mensajes");
                                 Mensaje m = new Mensaje(usuarioIdentificado, txtMensaje.getText().toString());
                                 databaseReference.push().setValue(m);
 
@@ -123,7 +123,7 @@ public class Chat extends AppCompatActivity {
                                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                                 }
 
-                                databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+                                databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
                                 databaseReference.child("preguntaRealizada").setValue("true");
                             }
 
@@ -158,7 +158,7 @@ public class Chat extends AppCompatActivity {
 
 
         //Obtenemos los mensajes de Firebase (para que cuando salgamos del chat y volvamos a entrar, no se pierdan los mensajes del Recycler)
-        databaseReference = firebaseDatabase.getReference("juegos/" + jugada + "/mensajes");
+        databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala + "/mensajes");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -179,7 +179,7 @@ public class Chat extends AppCompatActivity {
 
         //Cuando el otro jugador envíe un mensaje y se guarde en Firebase,
         //recoger ese mensaje y mostrarlo en el chat
-        databaseReference = firebaseDatabase.getReference("juegos/" + jugada + "/mensajes");
+        databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala + "/mensajes");
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {

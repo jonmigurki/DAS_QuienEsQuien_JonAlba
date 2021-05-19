@@ -92,14 +92,16 @@ public class GestionSalas extends AppCompatActivity {
                 //nombreSala = listaSalas.get(position);
 
 
-                nombreSala = "juego1";
+               // nombreSala = "juego1";
+                nombreSala = (String) (listView.getItemAtPosition(position).toString());
+
 
                 HashMap<String,String> jugador = new HashMap<String,String>();
                 jugador.put("usuario", nombreJugador);
                 jugador.put("personaje", "");
 
                 salaRef = database.getReference("juegos");
-                salaRef.child("juego1").child("jugador2").setValue(jugador);
+                salaRef.child(nombreSala).child("jugador2").setValue(jugador);
 
                 salaRef = database.getReference("juegos/" + nombreSala);
                 salaRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -137,6 +139,7 @@ public class GestionSalas extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), Juego.class);
                         intent.putExtra("usuario", nombreJugador);
                         intent.putExtra("categoria", categoria);
+                        intent.putExtra("sala", nombreSala);
                         startActivity(intent);
                         finish();
                     }

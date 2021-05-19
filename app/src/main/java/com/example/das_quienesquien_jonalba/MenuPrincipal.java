@@ -19,9 +19,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
 public class MenuPrincipal extends AppCompatActivity {
 
@@ -131,20 +135,30 @@ public class MenuPrincipal extends AppCompatActivity {
 
     private void crearSalaJuego(){
         //nombreSala = nombreJugador;
-        nombreSala = "juego1";
+       // nombreSala = "juego1";
+
+        String fecha = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+        String hora = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+
+        Random r = new Random();
+        int random = r.nextInt(1000);
+
+        nombreSala = "sala" + random + "_" + nombreJugador + "_" + fecha + "_" + hora;
+
 
         HashMap<String,String> jugador = new HashMap<String,String>();
         jugador.put("usuario", nombreJugador);
         jugador.put("personaje", "");
 
         salaRef = database.getReference("juegos");
-        salaRef.child("juego1").child("jugador1").setValue(jugador);
+        salaRef.child(nombreSala).child("jugador1").setValue(jugador);
         salaRef = database.getReference("juegos/" + nombreSala);
         salaRef.child("categoria").setValue(categoria);
 
         Intent intent = new Intent(getApplicationContext(), Juego.class);
         intent.putExtra("usuario", nombreJugador);
         intent.putExtra("categoria", categoria);
+        intent.putExtra("sala", nombreSala);
         startActivity(intent);
         finish();
     }

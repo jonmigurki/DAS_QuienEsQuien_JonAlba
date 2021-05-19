@@ -20,7 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Resolver extends AppCompatActivity {
 
-    String usuarioIdentificado, jugada;
+    String usuarioIdentificado, nombreSala;
     String[] nombrespersonajes;
     int[] rutapersonajes;
 
@@ -37,7 +37,7 @@ public class Resolver extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             usuarioIdentificado = extras.getString("usuario");
-            jugada = extras.getString("jugada");
+            nombreSala = extras.getString("sala");
             nombrespersonajes = extras.getStringArray("nombrespersonajes");
             rutapersonajes = extras.getIntArray("rutapersonajes");
         }
@@ -61,7 +61,7 @@ public class Resolver extends AppCompatActivity {
 
         firebaseDatabase = FirebaseDatabase.getInstance();
 
-        databaseReference = firebaseDatabase.getReference("juegos/" + jugada);
+        databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
 
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
