@@ -1,10 +1,12 @@
 package com.example.das_quienesquien_jonalba;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +26,9 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -169,6 +174,11 @@ public class Registro extends AppCompatActivity {
                 });
     }
 
-
+    // Al pulsar el botón de volver atrás, volvemos a MainActivity
+    public void onBackPressed() {
+        Intent i = new Intent(Registro.this, MainActivity.class);
+        startActivity(i);
+        finish();
+    }
 
 }

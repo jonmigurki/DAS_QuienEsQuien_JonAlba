@@ -1,8 +1,11 @@
 package com.example.das_quienesquien_jonalba;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +14,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -145,4 +152,40 @@ public class Login extends AppCompatActivity {
 
         }
     }
+
+
+    // Al pulsar el botón de volver atrás, volvemos donde el usuario elija
+    public void onBackPressed() {
+
+        String[] opciones = {"Pantalla Principal", "Pantalla de Registro"};
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(Login.this);
+        alert
+                .setTitle("¿A qué pantalla deseas ir?")
+                .setSingleChoiceItems(opciones, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        // Obtenemos la categoría seleccionada por el usuario
+                        String c = opciones[i];
+                        switch(i){
+                            case 0:
+                                Intent intent1 = new Intent(Login.this, MainActivity.class);
+                                startActivity(intent1);
+                                finish();
+                                break;
+                            case 1:
+                                Intent intent2 = new Intent(Login.this, Registro.class);
+                                startActivity(intent2);
+                                finish();
+                                break;
+                        }
+                        // Cuando ya se ha selecionado
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alertDia = alert.create();
+        // Mostrar el alert
+        alertDia.show();
+    }
+
 }

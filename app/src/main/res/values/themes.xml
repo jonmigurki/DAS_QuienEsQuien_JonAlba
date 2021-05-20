@@ -15,36 +15,10 @@
     </style>
 
 
-
-
-    <!--- Estilo personalizado para la interfaz de Menú Principal -->
-    <style name="MenuPrincipal" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <!--- Estilo personalizado para la interfaz de Login -->
+    <style name="Login" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#D85E524D</item>
-        <item name="colorPrimaryVariant">#00BCD4</item>
-        <item name="colorOnPrimary">#FFE6E4</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">#B5D3C5</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">#4E3C3C</item>
-        <!-- Customize your theme here. -->
-        <item name="android:windowBackground">@drawable/fondo_menuprinci</item>
-        <item name="actionMenuTextColor">#9C27B0</item>
-        <item name="android:textSize">16dp</item>
-        <item name="android:textStyle">bold</item>
-
-        <item name="android:navigationBarColor">#C4716060</item>
-        <item name="android:textColor">#000000</item>
-        <item name="android:editTextColor">#000000</item>
-
-    </style>
-
-    <!--- Estilo personalizado para la interfaz de Registro -->
-    <style name="Registro" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">#556888</item>
+        <item name="colorPrimary">#714E98</item>
         <item name="colorPrimaryVariant">#00BCD4</item>
         <item name="colorOnPrimary">#FFFFFF</item>
         <!-- Secondary brand color. -->
@@ -54,17 +28,85 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
         <!-- Customize your theme here. -->
-        <item name="android:windowBackground">@drawable/fondo_registro2</item>
+        <item name="android:windowBackground">@drawable/fondo7</item>
         <item name="actionMenuTextColor">#9C27B0</item>
         <item name="android:textSize">16dp</item>
         <item name="android:textStyle">bold</item>
 
-        <item name="android:navigationBarColor">#B2485977</item>
-        <item name="android:textColor">#485977</item>
-        <item name="android:editTextColor">#FFFCFC</item>
+        <item name="android:navigationBarColor">#BC714E98</item>
+        <item name="android:textColor">#614877</item>
+        <item name="android:editTextColor">#D37E7E</item>
+    </style>
+
+    <!--- Estilo personalizado para la interfaz de Menú Principal -->
+    <style name="MenuPrincipal" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#A55434</item>
+        <item name="colorPrimaryVariant">#00BCD4</item>
+        <item name="colorOnPrimary">#FFE6E4</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#B5D3C5</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">#4E3C3C</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@drawable/fondo55</item>
+        <item name="actionMenuTextColor">#9C27B0</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textStyle">bold</item>
+
+        <item name="android:navigationBarColor">#BAA55434</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:editTextColor">#000000</item>
 
     </style>
 
+    <!--- Estilo personalizado para la interfaz de Registro -->
+    <style name="Registro" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#1D7A88</item>
+        <item name="colorPrimaryVariant">#00BCD4</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#587869</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@drawable/fondo4</item>
+        <item name="actionMenuTextColor">#9C27B0</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textStyle">bold</item>
+
+        <item name="android:navigationBarColor">#B722808E</item>
+        <item name="android:textColor">#33A0AF</item>
+        <item name="android:editTextColor">#E17575</item>
+    </style>
+
+    <!--- Estilo personalizado para la interfaz de la pantalla Principal -->
+    <style name="Principal" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#BA2D2D</item>
+        <item name="colorPrimaryVariant">#00BCD4</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#587869</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@drawable/fondo1</item>
+        <item name="actionMenuTextColor">#9C27B0</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textStyle">bold</item>
+
+        <item name="android:navigationBarColor">#BFBA2D2D</item>
+        <item name="android:textColor">#33A0AF</item>
+        <item name="android:editTextColor">#E17575</item>
+    </style>
 
     <!-- Estilo personalizado para la interfaz de Chat -->
     <style name="Chat" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -80,6 +122,8 @@
         <item name="android:navigationBarColor">#C4716060</item>
         <item name="android:textColor">#000000</item>
         <item name="android:editTextColor">#000000</item>
+
+
 
 
     </style>

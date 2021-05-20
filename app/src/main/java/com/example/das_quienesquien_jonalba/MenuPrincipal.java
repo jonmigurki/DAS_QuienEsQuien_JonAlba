@@ -33,13 +33,8 @@ public class MenuPrincipal extends AppCompatActivity {
     ListView ListViewItem;
     List<ItemsMenuView> list;
 
+    // Categorías disponibles
     String[] listaCategorias = {"Los Simpson", "ANHQV – Aquí No Hay Quien Viva", "Disney"};
-    String[] listaJugadores = {"JugadorPruebas", "Jugador2"};
-
-    String nombreUsuario;
-
-    //--------------------------------------
-
 
     String nombreJugador = "";
     String nombreSala = "";
@@ -47,8 +42,6 @@ public class MenuPrincipal extends AppCompatActivity {
 
     FirebaseDatabase database;
     DatabaseReference salaRef;
-    DatabaseReference salasRef;
-    //--------------------------------------
 
     List<String> listaSalas;
 
@@ -61,17 +54,13 @@ public class MenuPrincipal extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
 
-
+        // Recogemos el nombre de usuario
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             nombreJugador = extras.getString("usuario");
         }
         listaSalas = new ArrayList<>();
 
-
-        //--------------------------------------
-
-        // ---------------------------
 
         // Asignamos los id a las variables
         ListViewItem = findViewById(R.id.ListViewItem);
@@ -91,7 +80,9 @@ public class MenuPrincipal extends AppCompatActivity {
 
                     // Creamos el AlertDialog con las opciones disponibles
                     AlertDialog.Builder alert = new AlertDialog.Builder(MenuPrincipal.this);
-                    alert.setSingleChoiceItems(listaCategorias, -1, new DialogInterface.OnClickListener() {
+                    alert
+                            .setTitle("Escoja una de las siguientes categorías:")
+                            .setSingleChoiceItems(listaCategorias, -1, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int i) {
                             // Obtenemos la categoría seleccionada por el usuario
@@ -132,10 +123,7 @@ public class MenuPrincipal extends AppCompatActivity {
     }
 
 
-
     private void crearSalaJuego(){
-        //nombreSala = nombreJugador;
-       // nombreSala = "juego1";
 
         String fecha = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         String hora = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -176,4 +164,13 @@ public class MenuPrincipal extends AppCompatActivity {
         // Devolvemos la lista
         return list;
     }
+
+
+    // Al pulsar el botón de volver atrás, volvemos a Login
+    public void onBackPressed() {
+        Intent i = new Intent(MenuPrincipal.this, Login.class);
+        startActivity(i);
+        finish();
+    }
+
 }

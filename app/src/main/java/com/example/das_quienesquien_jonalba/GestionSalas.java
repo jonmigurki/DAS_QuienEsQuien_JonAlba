@@ -47,54 +47,29 @@ public class GestionSalas extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gestion_salas);
 
+        // Creamos una instancia de la base de datos de Firebase
         database = FirebaseDatabase.getInstance();
 
-
-
+        // Recogemos el nombre de usuario
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             nombreJugador = extras.getString("usuario");
         }
 
-
-
-        //SharedPreferences preferences = getSharedPreferences("PREFS", 0);
-        //playerName = preferences.getString("playerName", "");
         nombreSala = nombreJugador;
 
+        // Asignamos los id a las variables
         listView = findViewById(R.id.listView);
-        button = findViewById(R.id.button);
 
-        // Todas las salas disponibles
+        // ArrayList con todas las salas disponibles
         listaSalas = new ArrayList<>();
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Creamos la sala y añadimos al jugador como jugador1
-                button.setText("Creando sala");
-                button.setEnabled(false);
-
-                nombreSala = nombreJugador;
-                salaRef = database.getReference("salas/"+ nombreSala +"/jugador1");
-
-                crearSala();
-
-                salaRef.setValue(nombreJugador);
-            }
-        });
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Unirse a una sala existente y entrar como el jugador2
-                //nombreSala = listaSalas.get(position);
-
-
-               // nombreSala = "juego1";
                 nombreSala = (String) (listView.getItemAtPosition(position).toString());
-
 
                 HashMap<String,String> jugador = new HashMap<String,String>();
                 jugador.put("usuario", nombreJugador);
