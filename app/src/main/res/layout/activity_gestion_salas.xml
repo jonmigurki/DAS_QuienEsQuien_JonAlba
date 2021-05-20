@@ -14,7 +14,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:background="#94FFF2EB"
-        android:text="Seleccione una sala"
+        android:text="Selecciona una sala"
         android:textAlignment="center"
         android:textColor="#DD8131"
         android:textSize="24sp"

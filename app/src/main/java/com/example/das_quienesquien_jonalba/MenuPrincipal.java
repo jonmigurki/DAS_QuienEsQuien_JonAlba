@@ -81,7 +81,7 @@ public class MenuPrincipal extends AppCompatActivity {
                     // Creamos el AlertDialog con las opciones disponibles
                     AlertDialog.Builder alert = new AlertDialog.Builder(MenuPrincipal.this);
                     alert
-                            .setTitle("Escoja una de las siguientes categorías:")
+                            .setTitle("Escoge una de las siguientes categorías:")
                             .setSingleChoiceItems(listaCategorias, -1, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int i) {

@@ -122,7 +122,7 @@ public class Registro extends AppCompatActivity {
                     if (response.equals("success")) {
                         // Abrimos la pantalla de login
 
-                        Toast.makeText(Registro.this, "REGISTRO COMPLETO", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Registro.this, "Resgistro completo.", Toast.LENGTH_LONG).show();
 
                         //Intent intent = new Intent (view.getContext(), Login.class);
                         //startActivityForResult(intent, 0);

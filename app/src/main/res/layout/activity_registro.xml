@@ -26,7 +26,7 @@
             android:id="@+id/textViewNombreUsu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Introduzca su nombre de usuario:" />
+            android:text="Introduce tu nombre de usuario:" />
 
         <EditText
             android:id="@+id/editTextNombreUsuario"
@@ -39,7 +39,7 @@
             android:id="@+id/textViewContra1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Introduzca su contraseña:" />
+            android:text="Introduce tu contraseña:" />
 
         <EditText
             android:id="@+id/editTextContrasena"
@@ -52,7 +52,7 @@
             android:id="@+id/textViewContra2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Repita su contraseña:" />
+            android:text="Repite tu contraseña:" />
 
         <EditText
             android:id="@+id/editTextContrasena2"
@@ -65,7 +65,7 @@
             android:id="@+id/textViewNombre2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Introduzca su nombre:" />
+            android:text="Introduce tu nombre:" />
 
         <EditText
             android:id="@+id/editTextNombreReal"
@@ -78,7 +78,7 @@
             android:id="@+id/textViewApellidos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Introduzca sus apellidos:" />
+            android:text="Introduce tus apellidos:" />
 
         <EditText
             android:id="@+id/editTextApellidos"
