@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -26,6 +27,8 @@ public class Resolver extends AppCompatActivity {
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+
+    boolean eliminarSala = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,8 +177,11 @@ public class Resolver extends AppCompatActivity {
 
                     Intent i = new Intent(Resolver.this, MenuPrincipal.class);
                     i.putExtra("usuario", usuarioIdentificado);
+
                     startActivity(i);
                     finish();
+
+
 
                 }
             });
@@ -227,7 +233,10 @@ public class Resolver extends AppCompatActivity {
 
                     Intent i = new Intent(Resolver.this, MenuPrincipal.class);
                     i.putExtra("usuario", usuarioIdentificado);
+
                     startActivity(i);
+
+
                     finish();
 
                 }

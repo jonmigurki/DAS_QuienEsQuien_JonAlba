@@ -51,6 +51,8 @@ public class Juego extends AppCompatActivity {
 
     boolean juego = false;
 
+    boolean eliminarSala = false;
+
 
     String nombreP1;    //Variables que guardan el nombre del personaje ('Homer Simpson') y su imagen asociada ('los_simpsons_5.png')
 
@@ -528,7 +530,10 @@ public class Juego extends AppCompatActivity {
 
                     Intent i = new Intent(Juego.this, MenuPrincipal.class);
                     i.putExtra("usuario", usuarioIdentificado);
+
                     startActivity(i);
+
+
                     finish();
 
                 }
@@ -577,6 +582,8 @@ public class Juego extends AppCompatActivity {
                     Intent i = new Intent(Juego.this, MenuPrincipal.class);
                     i.putExtra("usuario", usuarioIdentificado);
                     startActivity(i);
+
+
                     finish();
 
                 }
