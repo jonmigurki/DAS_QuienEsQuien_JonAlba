@@ -37,14 +37,12 @@ import java.util.Map;
 
 public class Registro extends AppCompatActivity {
 
+    // Variable para almacenar el token
     String token;
 
     // Instanciamos los objetos para los campos y botones
     EditText editTextNombreUsuario, editTextContrasena, editTextContrasena2, editTextNombreReal, editTextApellidos;
     Button buttonRegistrarse, buttonIniciarSesion;
-
-    // Variable con el ID del canal de notificaciones
-    private static final String CHANNEL_ID = "101";
 
     // URL del .php para el registro en el servidor
     private String URL = "http://ec2-54-242-79-204.compute-1.amazonaws.com/aarsuaga010/WEB/QuienEsQuien/registro.php";
@@ -136,7 +134,7 @@ public class Registro extends AppCompatActivity {
             }) {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
-                    // Creamos un map con el nombre de usuario y contraseña y lo devolvemos
+                    // Creamos un map con las variables necesarias y lo devolvemos
                     Map<String, String> data = new HashMap<>();
                     data.put("usuario", nombreUsu);
                     data.put("contrasena", contra);
@@ -144,7 +142,6 @@ public class Registro extends AppCompatActivity {
                     data.put("nombre", nombreReal);
                     data.put("apellidos", apellidos);
 
-                    // Modificar después
                     data.put("token", token);
 
                     return data;
