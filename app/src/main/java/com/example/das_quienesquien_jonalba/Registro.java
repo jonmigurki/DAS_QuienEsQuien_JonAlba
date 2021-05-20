@@ -42,7 +42,7 @@ public class Registro extends AppCompatActivity {
     private static final String CHANNEL_ID = "101";
 
     // URL del .php para el registro en el servidor
-    private String URL = "http://ec2-54-167-31-169.compute-1.amazonaws.com/aarsuaga010/WEB/QuienEsQuien/registro.php";
+    private String URL = "http://ec2-54-242-79-204.compute-1.amazonaws.com/aarsuaga010/WEB/QuienEsQuien/registro.php";
 
     private String nombreUsu, contra, contra2, nombreReal, apellidos;
 

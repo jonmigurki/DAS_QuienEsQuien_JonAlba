@@ -37,7 +37,7 @@ public class Login extends AppCompatActivity {
         identificarse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = "http://ec2-54-167-31-169.compute-1.amazonaws.com/aarsuaga010/WEB/QuienEsQuien/identificar.php?usuario="
+                String url = "http://ec2-54-242-79-204.compute-1.amazonaws.com/aarsuaga010/WEB/QuienEsQuien/identificar.php?usuario="
                         + usuario.getText().toString() + "&contrasena=" + contrasena.getText().toString();
 
                 new Conexion().execute(url);

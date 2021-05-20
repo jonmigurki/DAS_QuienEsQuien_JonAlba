@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -44,9 +45,9 @@ public class AdaptadorChat extends RecyclerView.Adapter<HolderChat> {
         if(listaMensajes.get(position).getUsuario().toString().equals(this.usuarioIdentificado)){
             holder.elusuario.setGravity(Gravity.RIGHT);
             holder.elmensaje.setGravity(Gravity.RIGHT);
-            holder.cardView.setCardBackgroundColor(Color.CYAN);
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.mimensaje));
         }else{
-            holder.cardView.setCardBackgroundColor(Color.GREEN);
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.sumensaje));
         }
 
 
