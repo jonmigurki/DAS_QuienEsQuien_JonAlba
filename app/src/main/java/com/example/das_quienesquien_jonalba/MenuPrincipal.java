@@ -46,7 +46,6 @@ public class MenuPrincipal extends AppCompatActivity {
     List<String> listaSalas;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +59,6 @@ public class MenuPrincipal extends AppCompatActivity {
         if (extras != null) {
             nombreJugador = extras.getString("usuario");
         }
-
         listaSalas = new ArrayList<>();
 
 
@@ -122,9 +120,6 @@ public class MenuPrincipal extends AppCompatActivity {
                 }
             }
         });
-
-
-
     }
 
 

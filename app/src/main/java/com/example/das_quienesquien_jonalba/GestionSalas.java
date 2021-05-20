@@ -73,7 +73,12 @@ public class GestionSalas extends AppCompatActivity {
                 // Unirse a una sala existente y entrar como el jugador2
                 nombreSala = (String) (listView.getItemAtPosition(position).toString());
 
+                HashMap<String,String> jugador = new HashMap<String,String>();
+                jugador.put("usuario", nombreJugador);
+                jugador.put("personaje", "");
 
+                salaRef = database.getReference("juegos");
+                salaRef.child(nombreSala).child("jugador2").setValue(jugador);
 
                 salaRef = database.getReference("juegos/" + nombreSala);
                 salaRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -123,15 +128,6 @@ public class GestionSalas extends AppCompatActivity {
 
 
                         if(valido) {
-
-                            HashMap<String,String> jugador = new HashMap<String,String>();
-                            jugador.put("usuario", nombreJugador);
-                            jugador.put("personaje", "");
-
-                            salaRef = database.getReference("juegos");
-                            salaRef.child(nombreSala).child("jugador2").setValue(jugador);
-
-
                             Intent intent = new Intent(getApplicationContext(), Juego.class);
                             intent.putExtra("usuario", nombreJugador);
                             intent.putExtra("categoria", categoria);
