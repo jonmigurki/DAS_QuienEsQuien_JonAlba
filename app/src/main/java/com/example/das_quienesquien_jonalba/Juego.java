@@ -50,10 +50,9 @@ public class Juego extends AppCompatActivity {
     boolean respuestaRealizada = false; //estos dos booleanos ayudarán a que SOLAMENTE se pueda hacer una pregunta y una respuesta por ronda (sólo 1 mensaje por ronda)
 
     boolean juego = false;
-    boolean fin = false;    //indica si la partida ha acabado
 
 
-    String nombreP1, nombreP2, imagenP;    //Variables que guardan el nombre del personaje ('Homer Simpson') y su imagen asociada ('los_simpsons_5.png')
+    String nombreP1;    //Variables que guardan el nombre del personaje ('Homer Simpson') y su imagen asociada ('los_simpsons_5.png')
 
     String categoria = "";
 
@@ -83,7 +82,6 @@ public class Juego extends AppCompatActivity {
         txtSala.setText("SALA " + nombreSala.split("_")[0].substring(4));
 
 
-        //  int[] personajes = {R.drawable.bart, R.drawable.edna, R.drawable.homer, R.drawable.lisa, R.drawable.seymour};
         rutapersonajes = getImagenesCategoria(categoria);
         nombrespersonajes = getNombresCategoria(categoria);
 
@@ -97,17 +95,8 @@ public class Juego extends AppCompatActivity {
 
 
         firebaseDatabase = FirebaseDatabase.getInstance();
-        //   databaseReference = firebaseDatabase.getReference("juegos");
 
-/*
-        HashMap<String,String> jugador = new HashMap<String,String>();
-        jugador.put("usuario", usuarioIdentificado);
-        jugador.put("personaje", nombreP);
 
-       HashMap<String,String> jugador2 = new HashMap<String,String>();
-        jugador2.put("usuario", "alba01");
-        jugador2.put("personaje", "Homer Simpson");
-        */
 
 
         // Date fecha = Calendar.getInstance().getTime();
@@ -128,20 +117,6 @@ public class Juego extends AppCompatActivity {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-            /*
-                if (snapshot.child(jugada).hasChild("jugador1") && !(snapshot.child(jugada).hasChild("jugador2")) && !(usuarioIdentificado.equals(jugador1))) {
-                    databaseReference.child(jugada).child("jugador2").setValue(jugador);
-
-                }else if(!(snapshot.child(jugada).hasChild("jugador1"))) {
-                    databaseReference.child(jugada).child("jugador1").setValue(jugador);
-                    turnoJugador.setText("Esperando la aprobación del jugador2");
-                    jugador1 = usuarioIdentificado;
-
-                }else if(snapshot.child(jugada).hasChild("jugador1") && snapshot.child(jugada).hasChild("jugador2") && !juego){
-                    turnoJugador.setText("Empieza la partida");
-                    juego=true;
-                    prejuego();
-                }*/
 
 
                 if (snapshot.child(nombreSala).hasChild("jugador1") && snapshot.child(nombreSala).hasChild("jugador2") && !juego) {
@@ -158,28 +133,10 @@ public class Juego extends AppCompatActivity {
         });
 
 
-        // databaseReference.child(jugada).child("jugador2").setValue(jugador2);
 
 
         turnoJugador = (TextView) findViewById(R.id.txtInformacionPartida);
 
- /*       databaseReference = FirebaseDatabase.getInstance().getReference().child("juego");
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String turno = snapshot.child("turno").getValue().toString();
-                turnoActual = turno;
-                turnoJugador.setText("Turno del jugador " + turno);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("Failed to read value.", error.toException().toString());
-
-            }
-        });
-*/
 
 
         //Creamos el tablero con los personajes
@@ -191,18 +148,6 @@ public class Juego extends AppCompatActivity {
         GridLayoutManager elLayoutRejillaIgual = new GridLayoutManager(this, 5, GridLayoutManager.VERTICAL, false);
         lalista.setLayoutManager(elLayoutRejillaIgual);
 
-    /*    btnCambiarTurno = (Button) findViewById(R.id.btnCambiarTurno);
-        btnCambiarTurno.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(turnoActual.equals("1")){
-                    databaseReference.child("turno").setValue("2");
-                }else{
-                    databaseReference.child("turno").setValue("1");
-                }
-            }
-        });
-*/
 
         //Cuando pulsemos el botón de "CHAT" nos llevará a la actividad del chat
         btnChat = (Button) findViewById(R.id.btnChat);
@@ -353,14 +298,12 @@ public class Juego extends AppCompatActivity {
         //Establecemos un número aleatorio entre 0 y 14
         Random r = new Random();
         int random1 = r.nextInt(15);
-        //int random2 = r.nextInt(15);
 
         imagenPersonaje.setImageResource(rutapersonajes[random1]);
-        //imagenPersonaje.setImageResource(rutapersonajes[random2]);
 
         //Guardamos el personaje que le ha tocado
         nombreP1 = nombrespersonajes[random1];
-        //nombreP2 = nombrespersonajes[random2];
+
 
     }
 
@@ -381,9 +324,6 @@ public class Juego extends AppCompatActivity {
                 } else if (j2.equals(usuarioIdentificado)) {
                     databaseReference.child("jugador2").child("personaje").setValue(nombreP1);
                 }
-
-                //databaseReference.child("jugador1").child("personaje").setValue(nombreP1);
-                //databaseReference.child("jugador2").child("personaje").setValue(nombreP2);
 
 
                 jugador1 = j1;
@@ -492,10 +432,6 @@ public class Juego extends AppCompatActivity {
 
                 }
 
-                  /*  if(snapshot.child("ganador").exists() && !(snapshot.child("comprueba").exists()) & snapshot.child("ganador").getValue().toString().equals(usuarioIdentificado)){
-
-                       mostrarAnimacion("ganado");
-                    }*/
 
                 if (snapshot.child("abandona").exists() && !(snapshot.child("abandona").getValue().toString().equals(usuarioIdentificado))) {
 
@@ -603,7 +539,6 @@ public class Juego extends AppCompatActivity {
 
         } else {
 
-
             ImageView image = new ImageView(Juego.this);
             String i = "perdido";
             int im = getResources().getIdentifier(i, "drawable", this.getPackageName());
@@ -679,7 +614,6 @@ public class Juego extends AppCompatActivity {
                             databaseReference.child("ganador").setValue(j1);
                         }
 
-
                     }
 
                     @Override
@@ -703,37 +637,6 @@ public class Juego extends AppCompatActivity {
         });
 
         alertdialog.show();
-
-
     }
 
-
-    public void onTaskRemoved(Intent rootIntent) {
-
-
-        databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
-        databaseReference.child("abandona").setValue(usuarioIdentificado);
-
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                if (snapshot.child("jugador1").getValue().toString().equals(usuarioIdentificado)) {
-                    String j2 = snapshot.child("jugador2").child("usuario").getValue().toString();
-                    databaseReference.child("ganador").setValue(j2);
-                } else {
-                    String j1 = snapshot.child("jugador1").child("usuario").getValue().toString();
-                    databaseReference.child("ganador").setValue(j1);
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }
 }

@@ -120,12 +120,9 @@ public class Registro extends AppCompatActivity {
                 public void onResponse(String response) {
                     // Si recibimos "success" como respuesta, la petición ha funcionado correctamente y nos hemos registrado
                     if (response.equals("success")) {
-                        // Abrimos la pantalla de login
 
                         Toast.makeText(Registro.this, "Resgistro completo.", Toast.LENGTH_LONG).show();
 
-                        //Intent intent = new Intent (view.getContext(), Login.class);
-                        //startActivityForResult(intent, 0);
                     }else{
                         // Si no, ha ocurrido un error
                         Toast.makeText(Registro.this, "Ha ocurrido un error.", Toast.LENGTH_LONG).show();

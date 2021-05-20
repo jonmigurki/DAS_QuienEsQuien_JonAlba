@@ -98,7 +98,7 @@ public class MenuPrincipal extends AppCompatActivity {
                                     categoria = "disney";
                                     break;
                             }
-                            //categoria = listaCategorias[i];
+
                             // Creamos la sala
                             crearSalaJuego();
 

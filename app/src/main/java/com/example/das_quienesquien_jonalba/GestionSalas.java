@@ -146,50 +146,12 @@ public class GestionSalas extends AppCompatActivity {
                 });
                 adb.show();
 
-/*
-                Log.d("CATEGORIA", categoria);
-
-                if(categoria.equals("")){
-                    Toast.makeText(GestionSalas.this, "No se ha podido cargar correctamente la categoría", Toast.LENGTH_SHORT).show();
-                }else{
-                    Intent intent = new Intent(getApplicationContext(), Juego.class);
-                    intent.putExtra("usuario", nombreJugador);
-                    intent.putExtra("categoria", categoria);
-                    startActivity(intent);
-                }
-*/
-
-
-                //crearSala();
-                //salaRef.setValue(nombreJugador);
             }
         });
 
         mostrarListaSalas();
     }
 
-    private void crearSala() {
-        salaRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                button.setText("Crear sala");
-                button.setEnabled(true);
-
-                Intent intent = new Intent(getApplicationContext(), Juego.class);
-                intent.putExtra("nombreSala", nombreJugador);
-                startActivity(intent);
-                finish();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                button.setText("Crear sala");
-                button.setEnabled(true);
-                // Notificamos al usuario de que ha ocurrido un error
-                Toast.makeText(GestionSalas.this,"Ha ocurrido un error.",Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     private void mostrarListaSalas(){
         salasRef = database.getReference("juegos");
