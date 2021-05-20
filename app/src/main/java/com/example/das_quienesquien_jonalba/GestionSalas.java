@@ -42,6 +42,8 @@ public class GestionSalas extends AppCompatActivity {
 
     String categoria = "";
 
+    boolean valido = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +85,13 @@ public class GestionSalas extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         categoria = snapshot.child("categoria").getValue().toString();
+
+                        if(snapshot.child("jugador1").child("usuario").getValue().toString().equals(nombreJugador)){
+                            valido=false;
+                        }else{
+                            valido=true;
+                        }
+
                     }
 
                     @Override
@@ -102,6 +111,13 @@ public class GestionSalas extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 categoria = snapshot.child("categoria").getValue().toString();
+
+                                if(snapshot.child("jugador1").child("usuario").getValue().toString().equals(nombreJugador)){
+                                    valido=false;
+                                }else{
+                                    valido=true;
+                                }
+
                             }
 
                             @Override
@@ -111,12 +127,16 @@ public class GestionSalas extends AppCompatActivity {
                         });
 
 
-                        Intent intent = new Intent(getApplicationContext(), Juego.class);
-                        intent.putExtra("usuario", nombreJugador);
-                        intent.putExtra("categoria", categoria);
-                        intent.putExtra("sala", nombreSala);
-                        startActivity(intent);
-                        finish();
+                        if(valido) {
+                            Intent intent = new Intent(getApplicationContext(), Juego.class);
+                            intent.putExtra("usuario", nombreJugador);
+                            intent.putExtra("categoria", categoria);
+                            intent.putExtra("sala", nombreSala);
+                            startActivity(intent);
+                            finish();
+                        }else{
+                            Toast.makeText(GestionSalas.this, "No puedes entrar. No puede estar el mismo jugador jugando contra sí mismo", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
