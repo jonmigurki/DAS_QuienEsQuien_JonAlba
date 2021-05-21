@@ -31,9 +31,12 @@ public class ElViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
 
+                //Obtenemos la clase desde donde accedemos gracias al contexto
                 String clase = elcontexto.getClass().toString();
 
                 switch (clase) {
+
+                    //Si venimos de Juego --> Se ha pulsado en un personaje del tablero --> Se pone en filtro negro o se quita
                     case "class com.example.das_quienesquien_jonalba.Juego":
 
 
@@ -48,6 +51,8 @@ public class ElViewHolder extends RecyclerView.ViewHolder {
 
                         break;
 
+
+                        //Si venimos de Resolver --> Un jugador ha seleccionado un personaje --> Aparece un AlertDialog pidiendo confirmación
                     case "class com.example.das_quienesquien_jonalba.Resolver":
 
 
@@ -56,6 +61,7 @@ public class ElViewHolder extends RecyclerView.ViewHolder {
                         adb.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
+                                //Comprobamos si el personaje seleccionado es el correcto
                                 Resolver r = (Resolver) elcontexto;
                                 r.comprobarPersonaje(eltexto.getText().toString());
                                 dialog.dismiss();
@@ -78,37 +84,5 @@ public class ElViewHolder extends RecyclerView.ViewHolder {
 
 
 
-      /*
-      itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-
-                if(laimagen.getParent()!=null) {
-                    ((ViewGroup) laimagen.getParent()).removeView(laimagen);
-                }
-
-                //Drawable imagen2 = laimagen.getDrawable();
-                //ImageView imageView2 = null;
-                //imageView2.setImageDrawable(imagen2);
-
-                AlertDialog.Builder builder =
-                        new AlertDialog.Builder(elcontexto).
-                                setMessage("Imagen agrandada").
-                                setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        if(laimagen.getParent()!=null) {
-                                            ((ViewGroup) laimagen.getParent()).removeView(laimagen);
-                                        }
-
-                                    }
-                                }).
-                                setView(laimagen);
-                builder.create().show();
-
-                return true;
-            }
-        });*/
     }
 }

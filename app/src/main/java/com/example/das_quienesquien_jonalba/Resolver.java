@@ -59,6 +59,7 @@ public class Resolver extends AppCompatActivity {
     }
 
 
+    //Método que se encarga de comprobar si el personaje seleccionado es el correcto y ha ganado o perdido la partida
     public void comprobarPersonaje(String personaje){
 
 
@@ -248,5 +249,10 @@ public class Resolver extends AppCompatActivity {
 
 
         }
+    }
+
+
+    public void onBackPressed(){
+
     }
 }

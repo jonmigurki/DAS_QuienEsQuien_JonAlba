@@ -75,7 +75,6 @@ public class Chat extends AppCompatActivity {
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // adaptador.addMensaje(new Mensaje(usuarioIdentificado, txtMensaje.getText().toString()));
 
                 databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -126,7 +125,6 @@ public class Chat extends AppCompatActivity {
                                 //Borramos el texto que acabamos de enviar
                                 txtMensaje.setText("");
 
-                                //adaptador.addMensaje(m);
 
                                 //Bajamos el teclado de la pantalla
                                 View view = Chat.this.getCurrentFocus();
@@ -169,27 +167,6 @@ public class Chat extends AppCompatActivity {
         });
 
 
-        //Obtenemos los mensajes de Firebase (para que cuando salgamos del chat y volvamos a entrar, no se pierdan los mensajes del Recycler)
-     /*   databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala + "/mensajes");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                if(recienEntrado) {
-                    for (DataSnapshot ds : snapshot.getChildren()) {
-                        Mensaje m = ds.getValue(Mensaje.class);
-                        adaptador.addMensaje(m);
-                    }
-                    recienEntrado=false;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-*/
 
         //Cuando el otro jugador envíe un mensaje y se guarde en Firebase,
         //recoger ese mensaje y mostrarlo en el chat

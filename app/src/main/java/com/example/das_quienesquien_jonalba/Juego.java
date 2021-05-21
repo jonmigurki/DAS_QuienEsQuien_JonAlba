@@ -49,12 +49,11 @@ public class Juego extends AppCompatActivity {
     boolean preguntaRealizada = false;
     boolean respuestaRealizada = false; //estos dos booleanos ayudarán a que SOLAMENTE se pueda hacer una pregunta y una respuesta por ronda (sólo 1 mensaje por ronda)
 
-    boolean juego = false;
+    boolean juego = false; //indica si el juego ha comenzado o no
 
-    boolean eliminarSala = false;
+    boolean hayGanador=false;
 
-
-    String nombreP1;    //Variables que guardan el nombre del personaje ('Homer Simpson') y su imagen asociada ('los_simpsons_5.png')
+    String nombreP1;
 
     String categoria = "";
 
@@ -65,13 +64,14 @@ public class Juego extends AppCompatActivity {
     int[] rutapersonajes;
     String[] nombrespersonajes;
 
-    TextView txtSala;
+    TextView txtSala;   //TextView que visualiza el número de la sala en la pantalla
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_juego);
 
+        //Obtenemos el usuario identificado, la categoría escogida y la sala creada
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             usuarioIdentificado = extras.getString("usuario");
@@ -79,17 +79,15 @@ public class Juego extends AppCompatActivity {
             nombreSala = extras.getString("sala");
         }
 
-
+        //Indicamos el nombre de la sala y la visualizamos en el layout
         txtSala = (TextView) findViewById(R.id.txtSala);
         txtSala.setText("SALA " + nombreSala.split("_")[0].substring(4));
 
-
+        //Obtenemos todos los nombres de los personajes y sus imágenes dada la categoría escogida
         rutapersonajes = getImagenesCategoria(categoria);
         nombrespersonajes = getNombresCategoria(categoria);
 
-        Log.d("HOLAA", "HOLAA");
-        Log.d("NOMBRES PERSONAJES", nombrespersonajes[0].toString());
-
+        //Obtenemos el ImageView del layout para visualizar el personaje del jugador
         imagenPersonaje = (ImageView) findViewById(R.id.imgPersonaje);
 
         //Se obtiene un personaje aleatorio con el que cada jugador jugará
@@ -100,27 +98,12 @@ public class Juego extends AppCompatActivity {
 
 
 
-
-        // Date fecha = Calendar.getInstance().getTime();
-        //    String fecha = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-        //    String hora = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-
-        //   Log.d("FECHA", fecha);
-        //  Log.d("HORA", hora);
-
-        //jugada = "juego_" + fecha + "_" + hora;
-        // jugada = "juego1";
-
-
-        //Guardamos a los jugadores en la nueva partida
-        //  -Si no hay un "jugador1" lo establecemos como "jugador1"
-        //  -Si ya hay un "jugador1" lo establecemos como "jugador2"
         databaseReference = firebaseDatabase.getReference("juegos");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-
+                //Si hay en la BD un jugador1 y jugador2 la partida comienza
                 if (snapshot.child(nombreSala).hasChild("jugador1") && snapshot.child(nombreSala).hasChild("jugador2") && !juego) {
                     turnoJugador.setText("Empieza la partida");
                     juego = true;
@@ -136,9 +119,8 @@ public class Juego extends AppCompatActivity {
 
 
 
-
+        //TextView donde se visualizan las instrucciones a los jugadores en cada momento de la partida
         turnoJugador = (TextView) findViewById(R.id.txtInformacionPartida);
-
 
 
         //Creamos el tablero con los personajes
@@ -168,26 +150,25 @@ public class Juego extends AppCompatActivity {
         });
 
 
-        //MÉTODO CON EL QUE EMPIEZA EL JUEGO
-        // juego();
 
         btnDescartados = (Button) findViewById(R.id.btnDescartados);
 
 
         btnResolver = (Button) findViewById(R.id.btnResolver);
 
+        //El usuario decide resolver ya el juego
         btnResolver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (juego) {
+                if (juego) {        //Si la partida ha comenzado
                     databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
 
                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                            if (snapshot.child("turno").getValue().toString().equals(usuarioIdentificado)) {
+                            if (snapshot.child("turno").getValue().toString().equals(usuarioIdentificado)) {    //Es su turno
 
                                 AlertDialog.Builder adb = new AlertDialog.Builder(Juego.this);
                                 adb.setTitle("¿Deseas resolver ya? No podrás volver");
@@ -214,7 +195,7 @@ public class Juego extends AppCompatActivity {
                                 adb.show();
 
 
-                            } else {
+                            } else {        //No es su turno
 
                                 Toast.makeText(Juego.this, "No puedes resolver hasta que sea tu turno", Toast.LENGTH_SHORT).show();
 
@@ -229,7 +210,7 @@ public class Juego extends AppCompatActivity {
                         }
                     });
 
-                } else {
+                } else {    //Si la partida aún no ha comenzado (el jugador 2 aún no ha entrado en la sala)
                     Toast.makeText(Juego.this, "Espera a que el Jugador 2 entre", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -321,6 +302,7 @@ public class Juego extends AppCompatActivity {
                 String j1 = snapshot.child("jugador1").child("usuario").getValue().toString();
                 String j2 = snapshot.child("jugador2").child("usuario").getValue().toString();
 
+                //Guardamos en la BD el personaje del usuario identificado
                 if (j1.equals(usuarioIdentificado)) {
                     databaseReference.child("jugador1").child("personaje").setValue(nombreP1);
                 } else if (j2.equals(usuarioIdentificado)) {
@@ -331,6 +313,7 @@ public class Juego extends AppCompatActivity {
                 jugador1 = j1;
                 jugador2 = j2;
 
+                //Guardamos en la BD variables nuevas (turno, preguntaRealizada, respuestaRealizada, ronda...)
 
                 databaseReference.child("turno").setValue(jugador1);
                 turno = jugador1;
@@ -359,34 +342,34 @@ public class Juego extends AppCompatActivity {
 
     public void juego() {
 
-
+        //Mantenemos un Listener en la BD para cualquier cambio que ocurra en ella
         databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                //El botón de "Hecho" se mantendrá oculto hasta que llegue el momento de descartar a los personajes
                 btnDescartados.setVisibility(View.INVISIBLE);
 
-                Log.d("HOLAAAAA", "ESTOY AQUII PRUEBA 11 JUEGO");
-                Log.d("USUARIO IDENTIFICADO", usuarioIdentificado);
-
+                //Si el turno actual es el del usuario identificado
                 if (snapshot.child("turno").getValue().toString().equals(usuarioIdentificado)) {
 
-                    //MI TURNO
-                    //Debo escribir la pregunta
-
+                    //Si aún no se ha hecho una pregunta, se le indica que la haga
                     if (snapshot.child("preguntaRealizada").getValue().toString().equals("false")) {
                         turnoJugador.setText("Vete al chat y haz una pregunta");
                     }
 
+                    //Si el otro jugador ya le ha respondido a la pregunta, se le indica que la lea y descarte a los personajes de su tablero
                     if (snapshot.child("respuestaRealizada").getValue().toString().equals("true")) {
 
                         //Se deben descartar los personajes que no cumplan con la característica
 
                         turnoJugador.setText("Ya ha respondido. Lee la respuesta en el chat y descarta a los personajes");
 
+                        //Ponemos visible el botón de "Hecho"
                         btnDescartados.setVisibility(View.VISIBLE);
 
+                        //Si ya ha hecho la pregunta, pero aún no hay respuesta, se le indica que espere a que el otro jugador conteste
                     } else if (snapshot.child("respuestaRealizada").getValue().toString().equals("false") &&
                             snapshot.child("preguntaRealizada").getValue().toString().equals("true")) {
 
@@ -395,21 +378,21 @@ public class Juego extends AppCompatActivity {
                     }
 
 
+                    //Si el turno es del otro jugador
                 } else if (!(snapshot.child("turno").getValue().toString().equals(usuarioIdentificado))) {
 
-                    //EL TURNO DEL OTRO JUGADOR
-                    //Debo responder a su pregunta
-
+                    //Si el jugador ya ha respondido, se le indica que espere a que el contrincante descarte los personajes de su tablero
                     if (snapshot.child("respuestaRealizada").getValue().toString().equals("true")) {
                         turnoJugador.setText("Espera a que el otro jugador descarte sus personajes");
                     }
 
-
+                    //Si el contrincante ya ha preguntado y este jugador aún no ha dado respuesta, se le indica que la realice en el chat
                     if (snapshot.child("preguntaRealizada").getValue().toString().equals("true") &&
                             snapshot.child("respuestaRealizada").getValue().toString().equals("false")) {
 
                         turnoJugador.setText("El otro jugador ya ha preguntado. Responde en el chat");
 
+                        //Si aún no hay pregunta, se le indica que espere a que el contrincante la realice
                     } else if (snapshot.child("preguntaRealizada").getValue().toString().equals("false")) {
 
                         turnoJugador.setText("Espera a que el otro jugador pregunte");
@@ -419,10 +402,11 @@ public class Juego extends AppCompatActivity {
                 }
 
 
+                //Si un jugador ha resuelto ya el juego y ha sido el otro jugador al usuario que se ha identificado
                 if (snapshot.child("ganador").exists() && snapshot.child("comprueba").exists() && !(snapshot.child("comprueba").getValue().toString().equals(usuarioIdentificado))) {
 
-
-                    if (snapshot.child("ganador").getValue().toString().equals(usuarioIdentificado)) {        //Gana el que no ha resuelto (el que resuelve ha fallado)
+                    //Gana el que no ha resuelto (el que resuelve ha fallado)
+                    if (snapshot.child("ganador").getValue().toString().equals(usuarioIdentificado)) {
 
                         mostrarAnimacion("ganado");
 
@@ -435,6 +419,7 @@ public class Juego extends AppCompatActivity {
                 }
 
 
+                //Si hay un jugador que ha abandonado (ha salido de la aplicación) y no es el identificado, éste ha ganado
                 if (snapshot.child("abandona").exists() && !(snapshot.child("abandona").getValue().toString().equals(usuarioIdentificado))) {
 
                     mostrarAnimacion("ganado");
@@ -450,6 +435,7 @@ public class Juego extends AppCompatActivity {
         });
 
 
+        //Cuando el usuario ya haya descartado, pulsará el botón de "Hecho"
         btnDescartados.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -459,6 +445,7 @@ public class Juego extends AppCompatActivity {
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        //Cambiamos el turno actual
                         if (snapshot.child("turno").getValue().toString().equals(jugador1)) {
                             databaseReference.child("turno").setValue(jugador2);
                         } else if (snapshot.child("turno").getValue().toString().equals(jugador2)) {
@@ -471,7 +458,7 @@ public class Juego extends AppCompatActivity {
                         databaseReference.child("respuestaRealizada").setValue("false");
                         respuestaRealizada = false;
 
-
+                        //Y volvemos a poner invisible el botón
                         btnDescartados.setVisibility(View.INVISIBLE);
 
                     }
@@ -491,7 +478,11 @@ public class Juego extends AppCompatActivity {
 
     public void mostrarAnimacion(String resultado) {
 
+        hayGanador=true;
+
+        //Si la animación debe ser de ganador
         if (resultado.equals("ganado")) {
+
 
             ImageView image = new ImageView(Juego.this);
             String i = "ganado";
@@ -544,6 +535,7 @@ public class Juego extends AppCompatActivity {
 
         } else {
 
+            //Si la animación debe ser de perdedor
             ImageView image = new ImageView(Juego.this);
             String i = "perdido";
             int im = getResources().getIdentifier(i, "drawable", this.getPackageName());
@@ -599,51 +591,55 @@ public class Juego extends AppCompatActivity {
 
     public void onBackPressed() {
 
-        AlertDialog.Builder alertdialog = new AlertDialog.Builder(this);
-        alertdialog.setTitle("¿Deseas salir?");
-        alertdialog.setMessage("Si sales perderás la partida...");
-        alertdialog.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        if(!hayGanador) {
 
-                databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
-                databaseReference.child("abandona").setValue(usuarioIdentificado);
+            AlertDialog.Builder alertdialog = new AlertDialog.Builder(this);
+            alertdialog.setTitle("¿Deseas salir?");
+            alertdialog.setMessage("Si sales perderás la partida...");
+            alertdialog.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
-                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    databaseReference = firebaseDatabase.getReference("juegos/" + nombreSala);
+                    databaseReference.child("abandona").setValue(usuarioIdentificado);
 
-                        if (snapshot.child("jugador1").getValue().toString().equals(usuarioIdentificado)) {
-                            String j2 = snapshot.child("jugador2").child("usuario").getValue().toString();
-                            databaseReference.child("ganador").setValue(j2);
-                        } else {
-                            String j1 = snapshot.child("jugador1").child("usuario").getValue().toString();
-                            databaseReference.child("ganador").setValue(j1);
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                            if (snapshot.child("jugador1").getValue().toString().equals(usuarioIdentificado)) {
+                                String j2 = snapshot.child("jugador2").child("usuario").getValue().toString();
+                                databaseReference.child("ganador").setValue(j2);
+                            } else {
+                                String j1 = snapshot.child("jugador1").child("usuario").getValue().toString();
+                                databaseReference.child("ganador").setValue(j1);
+                            }
+
                         }
 
-                    }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                        }
+                    });
 
 
-                Intent i = new Intent(Juego.this, MenuPrincipal.class);
-                startActivity(i);
-                finish();
-            }
-        });
+                    Intent i = new Intent(Juego.this, MenuPrincipal.class);
+                    startActivity(i);
+                    finish();
+                }
+            });
 
-        alertdialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+            alertdialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
 
-        alertdialog.show();
+            alertdialog.show();
+
+        }
     }
 
 }

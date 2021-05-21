@@ -28,6 +28,7 @@ import java.net.URL;
 
 public class Login extends AppCompatActivity {
 
+    //Instancias de los elementos del layout
     EditText usuario, contrasena;
     Button identificarse;
 
@@ -36,11 +37,12 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        //Inicializamos los elementos del layout
         usuario = (EditText) findViewById(R.id.txtUsuario);
         contrasena = (EditText) findViewById(R.id.txtContrasena);
         identificarse = (Button) findViewById(R.id.btnIdentificarse);
 
-
+        //Cuando pulsamos el botón "Identificarse"
         identificarse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,6 +57,7 @@ public class Login extends AppCompatActivity {
     }
 
 
+    //Clase que se encarga de realizar la conexión de manera asíncrona
     public class Conexion extends AsyncTask<String, String, String> {
 
         ProgressDialog pd = new ProgressDialog(Login.this);
@@ -62,7 +65,6 @@ public class Login extends AppCompatActivity {
         URL url = null;
 
         //Método que se ejecuta mientras está realizándose la conexión
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -131,8 +133,7 @@ public class Login extends AppCompatActivity {
         }
 
 
-        //Una vez finalizada la conexión, recogemos el resultado y hacemos las llamadas
-        //a las actividades desde donde provenía la llamada para finalizar con las ejecuciones
+        //Una vez finalizada la conexión, recogemos el resultado y permitimos la entrada del usuario o no
         protected void onPostExecute(String result) {
 
             pd.dismiss();
@@ -140,13 +141,16 @@ public class Login extends AppCompatActivity {
             Log.d("Resultado", result.toString());
 
             if(result.equals("OK")){
+                //Si el resultado es "OK", el usuario y contraseña son correctos y permitimos la entrada
                 Intent i = new Intent(Login.this, MenuPrincipal.class);
                 i.putExtra("usuario", usuario.getText().toString());
                 startActivity(i);
                 finish();
             }else if(result.equals("Error")){
+                //Si el resultado es "Error", el usuario o contraseña son incorrectos
                 Toast.makeText(Login.this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
             }else{
+                //Si el resultado es otro, ha habido un problema con la conexión
                 Toast.makeText(Login.this, "Ha ocurrido un error", Toast.LENGTH_SHORT).show();
             }
 

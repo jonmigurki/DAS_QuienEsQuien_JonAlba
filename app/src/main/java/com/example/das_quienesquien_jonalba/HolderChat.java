@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class HolderChat extends RecyclerView.ViewHolder {
 
+    //Holder del RecyclerView para el Chat
+
     TextView elusuario;
     TextView elmensaje;
     CardView cardView;
