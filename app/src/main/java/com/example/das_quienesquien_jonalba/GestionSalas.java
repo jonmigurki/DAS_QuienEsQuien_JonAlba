@@ -28,21 +28,23 @@ import java.util.List;
 
 public class GestionSalas extends AppCompatActivity {
 
+    // Instanciamos la ListView
     ListView listView;
-    Button button;
 
+    // Lista de salas disponibles
     List<String> listaSalas;
 
+    // Variables para almacenar la información del jugador y sala
     String nombreJugador = "";
     String nombreSala = "";
+    String categoria = "";
+    boolean valido = true;
 
+    // Instancias de Firebase
     FirebaseDatabase database;
     DatabaseReference salaRef;
     DatabaseReference salasRef;
 
-    String categoria = "";
-
-    boolean valido = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +60,7 @@ public class GestionSalas extends AppCompatActivity {
             nombreJugador = extras.getString("usuario");
         }
 
-        nombreSala = nombreJugador;
-
-        // Asignamos los id a las variables
+        // Asignamos los id a la variable
         listView = findViewById(R.id.listView);
 
         // ArrayList con todas las salas disponibles
@@ -73,10 +73,12 @@ public class GestionSalas extends AppCompatActivity {
                 // Unirse a una sala existente y entrar como el jugador2
                 nombreSala = (String) (listView.getItemAtPosition(position).toString());
 
+                // Construimos el HashMap "jugador" con su nombre de usuario y un personaje
                 HashMap<String,String> jugador = new HashMap<String,String>();
                 jugador.put("usuario", nombreJugador);
                 jugador.put("personaje", "");
 
+                // Asignamos el jugador2 en Firebase
                 salaRef = database.getReference("juegos");
                 salaRef.child(nombreSala).child("jugador2").setValue(jugador);
 
@@ -84,11 +86,15 @@ public class GestionSalas extends AppCompatActivity {
                 salaRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        // Obtenemos la categoría
                         categoria = snapshot.child("categoria").getValue().toString();
 
+                        // Si el jugador1 y el jugador actual son el mismo
                         if(snapshot.child("jugador1").child("usuario").getValue().toString().equals(nombreJugador)){
+                            // No es válido
                             valido=false;
                         }else{
+                            // De lo contrario, sí es válido
                             valido=true;
                         }
 
@@ -100,7 +106,8 @@ public class GestionSalas extends AppCompatActivity {
                     }
                 });
 
-
+                // Cuando el usuario presiona un elemento de la lista, se muestra
+                // un mensaje de confirmación
                 AlertDialog.Builder adb = new AlertDialog.Builder(GestionSalas.this);
                 adb.setTitle("¿Quieres unirte a la partida?");
                 adb.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
@@ -110,11 +117,15 @@ public class GestionSalas extends AppCompatActivity {
                         salaRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                // Obtenemos la categoría
                                 categoria = snapshot.child("categoria").getValue().toString();
 
+                                // Si el jugador1 y el jugador actual son el mismo
                                 if(snapshot.child("jugador1").child("usuario").getValue().toString().equals(nombreJugador)){
+                                    // No es válido
                                     valido=false;
                                 }else{
+                                    // De lo contrario, sí es válido
                                     valido=true;
                                 }
 
@@ -126,8 +137,11 @@ public class GestionSalas extends AppCompatActivity {
                             }
                         });
 
-
+                        // Si es válido
                         if(valido) {
+                            // Redirigimos al usuario a la pantalla de juego, pasándole
+                            // el nombre de usuario, la categoria en la que se va a jugar
+                            // y la sala
                             Intent intent = new Intent(getApplicationContext(), Juego.class);
                             intent.putExtra("usuario", nombreJugador);
                             intent.putExtra("categoria", categoria);
@@ -135,6 +149,7 @@ public class GestionSalas extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         }else{
+                            // Si el usuario no es válido, no puede jugar
                             Toast.makeText(GestionSalas.this, "No puedes entrar. No puede estar el mismo jugador jugando contra sí mismo", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -152,16 +167,21 @@ public class GestionSalas extends AppCompatActivity {
         mostrarListaSalas();
     }
 
-
+    // Método que muestra la lista de las salas disponibles
     private void mostrarListaSalas(){
+        // Obtenemos la referencia de "juegos" en la base de datos de Firebase
         salasRef = database.getReference("juegos");
         salasRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Mostrar la lista de los juegos disponibles
+
+                // Limpiamos la lista
                 listaSalas.clear();
+                // Obtenemos las salas e iteramos
                 Iterable<DataSnapshot> salas = dataSnapshot.getChildren();
                 for(DataSnapshot snapshot : salas){
+                    // Añadimos cada sala a la lista
                     listaSalas.add(snapshot.getKey());
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(GestionSalas.this, android.R.layout.simple_list_item_1, listaSalas);

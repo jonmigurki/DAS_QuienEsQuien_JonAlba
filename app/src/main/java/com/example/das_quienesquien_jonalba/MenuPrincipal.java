@@ -29,21 +29,21 @@ import java.util.Random;
 
 public class MenuPrincipal extends AppCompatActivity {
 
-    // Instanciamos la ListView
+    // Instanciamos la ListView y lista de items del menú
     ListView ListViewItem;
     List<ItemsMenuView> list;
 
     // Categorías disponibles
     String[] listaCategorias = {"Los Simpson", "ANHQV – Aquí No Hay Quien Viva", "Disney"};
 
+    // Variables para almacenar la información del jugador y sala
     String nombreJugador = "";
     String nombreSala = "";
     String categoria = "";
 
+    // Instancias de Firebase
     FirebaseDatabase database;
     DatabaseReference salaRef;
-
-    List<String> listaSalas;
 
 
     @Override
@@ -59,7 +59,6 @@ public class MenuPrincipal extends AppCompatActivity {
         if (extras != null) {
             nombreJugador = extras.getString("usuario");
         }
-        listaSalas = new ArrayList<>();
 
 
         // Asignamos los id a las variables
@@ -75,44 +74,45 @@ public class MenuPrincipal extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
                 ItemsMenuView item = list.get(i);
-                // ............
+                // Si el usuario selecciona "CREAR JUEGO"
                 if(item.id==1){
-
                     // Creamos el AlertDialog con las opciones disponibles
                     AlertDialog.Builder alert = new AlertDialog.Builder(MenuPrincipal.this);
                     alert
                             .setTitle("Escoge una de las siguientes categorías:")
                             .setSingleChoiceItems(listaCategorias, -1, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int i) {
-                            // Obtenemos la categoría seleccionada por el usuario
-                            String c = listaCategorias[i];
-                            switch(i){
-                                case 0:
-                                    categoria = "los_simpsons";
-                                    break;
-                                case 1:
-                                    categoria = "anhqv";
-                                    break;
-                                case 2:
-                                    categoria = "disney";
-                                    break;
-                            }
+                                @Override
+                                public void onClick(DialogInterface dialog, int i) {
+                                    // Obtenemos la categoría seleccionada por el usuario
+                                    String c = listaCategorias[i];
+                                    switch(i){
+                                        case 0:
+                                            categoria = "los_simpsons";
+                                            break;
+                                        case 1:
+                                            categoria = "anhqv";
+                                            break;
+                                        case 2:
+                                            categoria = "disney";
+                                            break;
+                                    }
 
-                            // Creamos la sala
-                            crearSalaJuego();
+                                    // Creamos la sala
+                                    crearSalaJuego();
 
-                            // Cuando ya se ha selecionado
-                            dialog.dismiss();
-                        }
-                    });
+                                    // Cuando ya se ha selecionado
+                                    dialog.dismiss();
+                                }
+                            });
                     AlertDialog alertDia = alert.create();
                     // Mostrar el alert
                     alertDia.show();
 
-
+                    // Si el usuario selecciona "UNIRSE"
                 }else if(item.id==2){
+                    // Se le lleva a la pantalla de seleccionar sala
                     Intent intent = new Intent (view.getContext(), GestionSalas.class);
+                    // Se pasa el nombre de usuario
                     intent.putExtra("usuario", nombreJugador);
                     startActivity(intent);
                     finish();
@@ -122,27 +122,33 @@ public class MenuPrincipal extends AppCompatActivity {
         });
     }
 
-
+    // Método para la creación de las salas
     private void crearSalaJuego(){
-
+        // Variables con la fecha y hora actual respectivamente
         String fecha = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         String hora = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
 
+        // Almacenamos un número aleatorio
         Random r = new Random();
         int random = r.nextInt(1000);
 
+        // Asignamos el nombre de cada sala utilizando la fecha, hora y el número aleatorio
+        // para asegurar que cada sala tiene un nombre único
         nombreSala = "sala" + random + "_" + nombreJugador + "_" + fecha + "_" + hora;
 
-
+        // Construimos el HashMap "jugador" con su nombre de usuario y un personaje
         HashMap<String,String> jugador = new HashMap<String,String>();
         jugador.put("usuario", nombreJugador);
         jugador.put("personaje", "");
 
+        // Asignamos el jugador1 y la categoría elegida en Firebase
         salaRef = database.getReference("juegos");
         salaRef.child(nombreSala).child("jugador1").setValue(jugador);
         salaRef = database.getReference("juegos/" + nombreSala);
         salaRef.child("categoria").setValue(categoria);
 
+        // Redirigimos al jugador a la sala de juego, a la que le pasamos
+        // el nombre de usuario, la categoría seleccionada y el nombre de la sala en cuestión
         Intent intent = new Intent(getApplicationContext(), Juego.class);
         intent.putExtra("usuario", nombreJugador);
         intent.putExtra("categoria", categoria);
